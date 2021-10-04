@@ -1,0 +1,188 @@
+import requests
+from lxml import etree
+import pandas as pd
+from pandas import DataFrame
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from amazoncaptcha import AmazonCaptcha
+import time
+import os
+import re
+
+
+
+def gethtml(url0, head):
+    i = 0
+    while i < 5:
+        try:
+            html = requests.get(url=url0, headers=head, timeout=(10, 20))
+            repeat = 0
+            while (html.status_code != 200):  # 错误响应码重试
+                print('error: ', html.status_code)
+                time.sleep(20 + repeat * 5)
+                if (repeat < 5):
+                    repeat += 1
+                html = requests.get(url=url0, headers=head, timeout=(10, 20))
+            return html
+        except requests.exceptions.RequestException:
+            print('超时重试次数: ', i + 1)
+            time.sleep(1)
+            i += 1
+    raise Exception()
+
+
+hea = {
+    'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+    'accept-encoding': 'gzip, deflate, br',
+    'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8',
+    'cache-control': 'max-age=0',
+    'downlink': '8',
+    'ect': '4g',
+    'rtt': '250',
+    'Cookie': "session-id=134-0636042-0633818; session-id-time=2082787201l; i18n-prefs=USD; lc-main=zh_CN; sp-cdn=\"L5Z9:HK\"; x-wl-uid=1+h+8IhdF3lb3loyXLwiMOfz3PH6woTCuzvYabJv1d81BUtVw5TivYIXiDZAsh9cD2nneHGwuI88=; ubid-main=131-3884934-2925229; session-token=ZK8ZbeTD4tYIbKhfb3ovzTNSyFhCCiVB11MxESFEcen0QcGOLJsPZyJGuYVXhbc8UHxlfxi3jlhqH2/Vi1r5e5JUC6VtDJ3SYr1BHKeJ/ojd1NXXiFPsvhS6vfu4DLGXTLXp09O74a2y6RJ819FBo+te0ipxQIzfDGe8Zl4AJR1vUO6i0dyTc+SaewPDubDb; csm-hit=tb:X1TAAK5TV6CYS0QH19GC+s-V75NP7RDRN9BM9MW71CX|1594957493721&t:1594957493721&adb:adblk_no",
+    'upgrade-insecure-requests': '1',
+    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.89 Safari/537.36'
+}
+
+df = DataFrame({
+    '类别': {},
+    '排名': {},
+    '照片链接': {},
+    '商品链接': {},
+    '标题': {},
+    '星级': {},
+    '评论数': {},
+    '低价格': {},
+    '高价格': {},
+
+})
+
+path = 'goods.csv'
+df_type = list(pd.read_csv(path)['类别'])
+df_link = list(pd.read_csv(path)['链接'])
+
+for link in range(0, len(df_link)):
+    time.sleep(2)
+    for j in range(1, 3):
+        url0 = df_link[link]
+        url1 = url0.split('ref=', 2)[0]
+        url2 = "ref=zg_bs_pg_%s?_encoding=UTF8&pg=%s" % (str(j), str(j))
+        url = url1
+        print(url)
+        req = gethtml(url, hea)
+        #options = Options()
+        # 配置无头参数,即不打开浏览器
+
+        #options.addArguments("--lang=en_US")
+        #options.add_argument('--headless')
+        options = webdriver.FirefoxOptions()
+        #options.set_headless()
+        options.add_argument('-headless')
+        options.add_argument('--disable - gpu')
+        # 配置Chrome浏览器的selenium驱动
+        chromedriver = "C:/Program Files/Google/Chrome/Application/chromedriver.exe"
+        os.environ["webdriver.chrome.driver"] = chromedriver
+        # 将参数设置+浏览器驱动组合
+        #browser = webdriver.Chrome(chromedriver, chrome_options=options)
+        browser = webdriver.Firefox(firefox_options=options)
+        url=url+"&language = en_US"
+        browser.get(url)
+        #language = en_US
+        captcha = AmazonCaptcha.fromdriver(browser)
+        solution = captcha.solve()  # 识别后返回的结果，字符型
+        fw = open('d:/amzon.html', 'w', encoding='utf-8')
+        fw.write(str(browser.page_source))
+        fw.close()
+        #yzm = input("please input the captcha\n>")
+        captchacharacters = browser.find_element_by_id('captchacharacters')
+
+        captchacharacters.send_keys(solution)
+        buttentj= browser.find_element_by_tag_name('button')
+        buttentj.click()
+        time.sleep(5)
+        fw = open('d:/amzon1.html', 'w', encoding='utf-8')
+        fw.write(str(browser.page_source))
+        fw.close()
+        browser.close()
+        fw.close()
+        req = gethtml(url, hea)
+        html = etree.HTML(req.text)
+        if(req.text.find("robot")):
+
+            options = Options()
+            # 配置无头参数,即不打开浏览器
+            options.add_argument('--headless')
+            # 配置Chrome浏览器的selenium驱动
+            chromedriver = "C:/Program Files/Google/Chrome/Application/chromedriver.exe"
+            os.environ["webdriver.chrome.driver"] = chromedriver
+            # 将参数设置+浏览器驱动组合
+            browser = webdriver.Chrome(chromedriver, chrome_options=options)
+            browser.get(url)
+            fw = open('d:/amzon.html', 'w', encoding='utf-8')
+            fw.write(str(browser.page_source))
+            browser.close()
+            fw.close()
+
+        else:
+            a1 = html.xpath(
+                '//li[@class="zg-item-immersion"][%s]//span[@class="zg-badge-text"]/text()' % str(i + 1))
+            time.sleep(10)
+
+            for i in range(0, 50):
+                z = i + (j - 1) * 50 + link * 100  # 调整序号
+                df.loc[z, '类别'] = df_type[link]
+                a1 = html.xpath(
+                    '//li[@class="zg-item-immersion"][%s]//span[@class="zg-badge-text"]/text()' % str(i + 1))  # 50个
+                if (len(a1) == 0):
+                    df.loc[z, '排名'] = '***'  # 有的链接前100名中并没有100个商品
+                    continue
+                a2 = html.xpath(
+                    '//li[@class="zg-item-immersion"][%s]//div[@class="a-section a-spacing-small"]/img/@src' % str(
+                        i + 1))
+                a3 = html.xpath(
+                    '//li[@class="zg-item-immersion"][%s]//div[@class="a-section a-spacing-small"]/img/@alt' % str(
+                        i + 1))
+                a7 = html.xpath('//li[@class="zg-item-immersion"][%s]/span/div/span/a/@href' % str(i + 1))
+                if (len(a2) == 0 and len(a3) == 0):
+                    df.loc[z, '照片链接'] = '###'  # 有的商品有排名，但已经不存在 --- This item is no longer available
+                    df.loc[z, '标题'] = '###'
+                    continue
+                a4 = html.xpath('//li[@class="zg-item-immersion"][%s]//span[@class="a-icon-alt"]/text()' % str(i + 1))
+                a5 = html.xpath(
+                    '//li[@class="zg-item-immersion"][%s]//a[@class="a-size-small a-link-normal"]/text()' % str(i + 1))
+                a6 = html.xpath(
+                    '//li[@class="zg-item-immersion"][%s]//span[@class="p13n-sc-price"]/text()' % str(i + 1))
+                a7 = html.xpath('//li[@class="zg-item-immersion"][%s]/span/div/span/a/@href' % str(i + 1))  # 商品链接
+
+                df.loc[z, '排名'] = a1[0]
+                df.loc[z, '照片链接'] = a2[0]
+                df.loc[z, '标题'] = a3[0]
+                df.loc[z, '商品链接'] = "https://www.amazon.com/" + a7[0]
+
+                if (len(a4) == 0):
+                    df.loc[z, '星级'] = 0
+                else:
+                    if ('star' in a4[0]):
+                        x_star = a4[0].split(' out', 2)[0]  # 提取星级数--英文
+                        df.loc[z, '星级'] = x_star
+                    if ('星' in a4[0]):
+                        x_star = re.findall(r".*平均 (.*) 星.*", a4[0])[0]  # 提取星级数--中文
+                        df.loc[z, '星级'] = x_star
+                if (len(a5) == 0):
+                    df.loc[z, '评论数'] = 0
+                else:
+                    df.loc[z, '评论数'] = a5[0].replace(',', '')
+
+                if (len(a6) == 2):
+                    df.loc[z, '低价格'] = a6[0]
+                    df.loc[z, '高价格'] = a6[1]
+                elif (len(a6) == 1):
+                    df.loc[z, '低价格'] = a6[0]
+                    df.loc[z, '高价格'] = 0
+                elif (len(a6) == 0):
+                    df.loc[z, '低价格'] = 0
+                    df.loc[z, '高价格'] = 0
+
+
+path0 = 'd:/pm22.csv'
+df.to_csv(path0, encoding='utf-8', index=False)  # 去掉index，保留头部
