@@ -3,8 +3,7 @@ import requests
 import sys
 import time
 import pymysql
-
-
+import threading
 
 config= {
 'host':'127.0.0.1',
@@ -24,8 +23,11 @@ config= {
 }
 STORE_PATH="D:/cjso/"
 
-class DownLoadPictures(object):
-    def __init__(self, sn):
+# 继承父类threading.Thread
+class DownLoadPictures(threading.Thread):
+    def __init__(self, name, sn):
+        super().__init__()
+        self.name = name
         self.headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
                                       '(KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36',
                         'Referer': 'https://image.so.com/z?ch=beauty'}
@@ -39,12 +41,14 @@ class DownLoadPictures(object):
         self.conn.close()
 
     def get_resp_data(self):
-        print('当前是链接为{}的图片下载！'.format(self.url))
+        # print('当前是链接为{}的图片下载！'.format(self.url))
+        print('当前是线程为{}的图片下载！'.format(self.name))
         # 返回的数据在json里
         resp = requests.get(self.url, headers=self.headers)
         return resp.json()
 
-    def get_download_url(self):
+    def run(self):
+        # 重写run函数，线程在创建后会直接运行run函数
         resp_data = self.get_resp_data()
         # 判断是否还有图片
         if resp_data['end'] is False:
@@ -82,9 +86,13 @@ class DownLoadPictures(object):
 
 if __name__ == '__main__':
     start_time = time.time()
+    thread_list = []
     for i in range(0, 301, 30):
-        test = DownLoadPictures(sn=i)
-        test.get_download_url()
+        test = DownLoadPictures(name=str(i), sn=i)
+        thread_list.append(test)
+    for t in thread_list:
+        t.start()
+    for t in thread_list:
+        t.join()
     use_time = time.time() - start_time
-    print('单线程用时：{}秒'.format(use_time))
-
+    print('多线程用时：{}秒'.format(use_time))
