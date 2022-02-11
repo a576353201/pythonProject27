@@ -43,7 +43,7 @@ def isLogin():
 
 
 def login(secret, account):
-    post_url = 'https://uxren.cn/wp-login.php'
+    post_url = 'https://www.uxren.cn/wp-login.php'
     postdata = {
         'pwd': account,
         'log': secret,
@@ -87,7 +87,7 @@ if __name__ == '__main__':
     if isLogin():
         print('您已经登录')
     else:
-        login('a576353201', '#YDFF2020')
+        login('576353201@qq.com', '#YDFF2020')
 
 
 

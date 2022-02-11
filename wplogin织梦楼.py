@@ -47,10 +47,10 @@ def login(secret, account):
     postdata = {
         'pwd': account,
         'log': secret,
-        'rememberme': 'true',
-        'redirect_to': 'http://www.dedelou.com/wp-admin ',
-        'testcookie': 1,
-        'wp-submit': '登录',
+        # 'rememberme': 'true',
+        # 'redirect_to': 'http://www.dedelou.com/wp-admin ',
+        # 'testcookie': 1,
+        # 'wp-submit': '登录',
 
     }
     try:
@@ -79,9 +79,9 @@ if __name__ == '__main__':
     headers = {
         "Host": "www.dedelou.com",
         "Origin": "http://www.dedelou.com",
-        "Referer": "http://www.dedelou.com/wp-login.php",
-        'User-Agent': agent,
-        'Cookie': '__yjs_duid=1_8093628660b84177d622b8f0296a2bd11625670399617; PHPSESSID=tal00p3npqo9tq7aqc0dp4m49b; wordpress_test_cookie=WP%20Cookie%20check; Hm_lvt_8d69b728ad67b34c6d5d49c1c3bff604=1625670432; cao_notice_cookie=1; Hm_lpvt_8d69b728ad67b34c6d5d49c1c3bff604=1625671866'
+        # "Referer": "http://www.dedelou.com/wp-login.php",
+        # 'User-Agent': agent,
+        # 'Cookie': '__yjs_duid=1_8093628660b84177d622b8f0296a2bd11625670399617; PHPSESSID=tal00p3npqo9tq7aqc0dp4m49b; wordpress_test_cookie=WP%20Cookie%20check; Hm_lvt_8d69b728ad67b34c6d5d49c1c3bff604=1625670432; cao_notice_cookie=1; Hm_lpvt_8d69b728ad67b34c6d5d49c1c3bff604=1625671866'
 
     }
     if isLogin():
