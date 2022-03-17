@@ -31,19 +31,20 @@ def gethtml(url0, head):
     raise Exception()
 
 
-# mydb = mysql.connector.connect(
-#     host="localhost",
-#     user="root",
-#     passwd="tE9MKDewI5hfA5gT",
-#     database="shopry"
-# )
 mydb = mysql.connector.connect(
-  host="localhost",
-  user="wwwhuanl_shop",
-  passwd="m]]u_xjGjxg",
-  database="wwwhuanl_shop",
-charset="utf8mb4"
+    host="localhost",
+    user="root",
+    passwd="tE9MKDewI5hfA5gT",
+    # database="shopry"
+    database="shopt"
 )
+# mydb = mysql.connector.connect(
+#   host="localhost",
+#   user="wwwhuanl_shop",
+#   passwd="m]]u_xjGjxg",
+#   database="wwwhuanl_shop",
+# charset="utf8mb4"
+# )
 mycursor = mydb.cursor()
 
 # v2 = sys.argv[2]
@@ -111,7 +112,7 @@ path = 'pm.csv'
 #     f.close()
 
 
-mycursor.execute("select name,id from fa_antshop_category where pid!=0 and image!='2' order by id asc")
+mycursor.execute("select name,id from fa_wanlshop_category where pid!=0 and image!='2' order by id asc")
 
 fldata = mycursor.fetchall()
  ## 空列表
@@ -120,7 +121,10 @@ for row in fldata:
     qstr = row[0]
     v2 = row[1]
     df_link = []
-    df_linkstr = 'https://shopee.tw/api/v4/search/search_items?by=relevancy&keyword=%s&limit=20&newest=20&order=desc&page_type=search&scenario=PAGE_GLOBAL_SEARCH&version=2' % (
+    df_linkstr = 'https://shopee.sg/api/v4/search/search_items?by=relevancy&keyword=%s&limit=20&newest=20&order=desc&page_type=search&scenario=PAGE_GLOBAL_SEARCH&version=2' % (
+
+        #df_linkstr = 'https://my.xiapibuy.com/api/v4/search/search_items?by=relevancy&keyword=%s&limit=20&newest=20&order=desc&page_type=search&scenario=PAGE_GLOBAL_SEARCH&version=2' % (
+
         str(qstr))
     # df_linkstr='https://shopee.tw/api/v4/search/search_items?by=relevancy&keyword=布質尿布&limit=20&newest=20&order=desc&page_type=search&scenario=PAGE_GLOBAL_SEARCH&version=2'
     df_link.append(df_linkstr)
@@ -143,7 +147,7 @@ for row in fldata:
                     title = html['items'][i]['item_basic']['name']
                     image = html['items'][i]['item_basic']['image']
                     images = html['items'][i]['item_basic']['images']
-                    image = "https://cf.shopee.tw/file/" + image
+                    image = "https://cf.shopee.sg/file/" + image
                     stock = html['items'][i]['item_basic']['stock']
                     price = html['items'][i]['item_basic']['price']
                     category_id = v2
@@ -157,7 +161,7 @@ for row in fldata:
                     views = 0
                     description = ''
                     proid = str(html['items'][i]['itemid']) + ',' + str(html['items'][i]['shopid'])
-                    purl = 'https://shopee.tw/api/v2/item/get?itemid=%s&shopid=%s' % (
+                    purl = 'https://shopee.sg/api/v2/item/get?itemid=%s&shopid=%s' % (
                         str(html['items'][i]['itemid']), str(html['items'][i]['shopid']));
                     preq = gethtml(purl, hea)
                     pjson = preq.json()
@@ -167,16 +171,16 @@ for row in fldata:
                     except:
                         description = '.'
                     images = ",".join(images)
-                    images = "https://cf.shopee.tw/file/" + images.replace(",", ",https://cf.shopee.tw/file/")
+                    images = "https://cf.shopee.sg/file/" + images.replace(",", ",https://cf.shopee.sg/file/")
                     # price= format_currency(price, 'USD', locale='en_US')
                     price = str(price)[:-5]
 
-                    mycursor.execute("select * from fa_antshop_goods where proid='" + proid + "'")
+                    mycursor.execute("select * from fa_wanlshop_goods where proid='" + proid + "'")
 
                     data = mycursor.fetchall()
                     if (len(data) != 0):
                         continue
-                    sql = 'Insert  Into `fa_antshop_goods` (`title`,`image`,`images`,`price`,`category_id`,`shop_id`,`brand_id`,`freight_id`,`grounding`,`specs`,`distribution`,`activity`,`views`,`content`,`proid`) Values (%s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s)'
+                    sql = 'Insert  Into `fa_wanlshop_goods` (`title`,`image`,`images`,`price`,`category_id`,`shop_id`,`brand_id`,`freight_id`,`grounding`,`specs`,`distribution`,`activity`,`views`,`content`,`proid`) Values (%s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s)'
                     val = (
                         title, image, images, price, category_id, shop_id, brand_id, freight_id, grounding, specs,
                         distribution,
@@ -190,10 +194,10 @@ for row in fldata:
                     for k in range(len(spu)):
                         spuname = spu[k]['name']
                         item = ",".join(spu[k]['options'])
-                        sql = "INSERT INTO fa_antshop_goods_spu (name, item,goods_id) VALUES (%s, %s, %s)"
+                        sql = "INSERT INTO fa_wanlshop_goods_spu (name, item,goods_id) VALUES (%s, %s, %s)"
                         val = (spuname, item, goodsid)
-                        mycursor.execute(sql, val)
-                        spuid = mycursor.lastrowid
+                        # mycursor.execute(sql, val)
+                        # spuid = mycursor.lastrowid
                         mydb.commit()
                     for k in range(len(models)):
                         # spuname=spu[k]['name']
@@ -204,10 +208,10 @@ for row in fldata:
                         price = str(price)[:-5]
                         market_price = str(market_price)[:-5]
                         sn = 11
-                        sql = "INSERT INTO fa_antshop_goods_sku (difference, price,market_price,stock,goods_id,weigh,sn) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+                        sql = "INSERT INTO fa_wanlshop_goods_sku (difference, price,market_price,stock,goods_id,weigh,sn) VALUES (%s,%s,%s,%s,%s,%s,%s)"
                         val = (difference, price, market_price, stock, goodsid, 1, sn)
-                        mycursor.execute(sql, val)
-                        skuid = mycursor.lastrowid
+                        # mycursor.execute(sql, val)
+                        # skuid = mycursor.lastrowid
                         mydb.commit()
                     a2 = html['items'][i]['item_basic']['name']
 
@@ -227,13 +231,13 @@ for row in fldata:
                         'sec-fetch-site': 'same-origin',
                         'sec-fetch-mode': 'cors',
                         'sec-fetch-dest': 'empty',
-                        'referer': 'https://shopee.tw/product/%s/%s' % (
+                        'referer': 'https://shopee.sg/product/%s/%s' % (
                             str(html['items'][i]['itemid']), str(html['items'][i]['shopid'])),
                         'accept-language': 'zh-CN,zh;q=0.9',
                         'cookie': 'REC_T_ID=a3f6fce2-1fb7-11ec-b032-d09466041c6b; _gcl_au=1.1.1214922703.1632768612; SPC_IA=-1; SPC_F=ouxdxbiZb1POSiYlwddIYkbpGRARJ6c1; _fbp=fb.1.1632768615123.478588372; __BWfp=c1632768616136x877733d29; G_ENABLED_IDPS=google; SPC_ST=".ZHFjUUxnZThqazQxWlNtTtjZRK5C9MGAquxANTWr8XzWiZPSwggdoILVt2KP3/74sZfGt9umBsFx6NRD4+4YiOzYhUH07Mlmzl66u2+KoMG2I1aWqCYxoJd5P8LDYHvWi3ha72knkCwZWUSJONJzfU1b5LWxqcYx4n/zU3BYuYDcstXtShNtwZs14rNVytl6p2BD5qSySClsdjzGabRVEg=="; SPC_U=549058135; SPC_CLIENTID=b3V4ZHhiaVpiMVBPqbfoflcamgckbsqn; SPC_EC=WGtFbFFzcUF1aHQ1WnF4cQfEz1lTMxUOp6PqFOqburpZHXKO3RGyyb98UYrGix391nh+puytD5dpyvCQe/yQJ8T1Oa5ATAip+0zwexzMrFvo6kYJ1k/D5Nf7LG7jaTBeuLhOHfWpUHhteCuo1NGHBTlhG6ezWNc6oe/wYBlUjtQ=; SPC_SI=bfftoctw1.hzwtZdHuiHPdBwIeePYSVB2OSZf53hp0; csrftoken=oFoeA7tMkP2lRkEQFPV3usRJhtftPZfs; _gid=GA1.2.27729051.1633191977; welcomePkgShown=true; AMP_TOKEN=%24NOT_FOUND; _dc_gtm_UA-61915057-6=1; _ga=GA1.2.423118293.1632768616; SPC_T_IV="SLwdXyUnSa3QAqeLxhmuNw=="; SPC_T_ID="lr/HN/FRRt60QqkSR092UqQlaEWvjpgk6xKZu9DlmxORNvg0NtuamxzLBBwx7Sj+QUgsu6cGTl9LdUSLTyVeyVjNfRf7A2SyM680otZYltY="; SPC_R_T_ID=lr/HN/FRRt60QqkSR092UqQlaEWvjpgk6xKZu9DlmxORNvg0NtuamxzLBBwx7Sj+QUgsu6cGTl9LdUSLTyVeyVjNfRf7A2SyM680otZYltY=; SPC_R_T_IV=SLwdXyUnSa3QAqeLxhmuNw==; SPC_T_ID=lr/HN/FRRt60QqkSR092UqQlaEWvjpgk6xKZu9DlmxORNvg0NtuamxzLBBwx7Sj+QUgsu6cGTl9LdUSLTyVeyVjNfRf7A2SyM680otZYltY=; SPC_T_IV=SLwdXyUnSa3QAqeLxhmuNw==; cto_bundle=y9B1al9Lc0cyV1YxbFc3ZzlFamp5TUg3M2hHbDNNQjh6Y3pvYjBqUUk5R3Q1T0JGTHFMT1lDNFJncExWSHhIWVd2T3p3T3hSbHdvdEJDZzFtMk1laHBxTU01ajJYdkxxc1dnSk5GSlA3TVRET0d6RG4yZzFKY2t0bEVqRDNFcW5sSzlMSDlybEdKJTJCdzFUREhMY05XTWtwUEZqQSUzRCUzRA; _ga_RPSBE3TQZZ=GS1.1.1633207226.10.1.1633208232.60',
                     }
 
-                    purl = 'https://shopee.tw/api/v2/item/get_ratings?flag=1&itemid=%s&limit=3&offset=0&shopid=%s' % (
+                    purl = 'https://shopee.sg/api/v2/item/get_ratings?flag=1&itemid=%s&limit=3&offset=0&shopid=%s' % (
                         str(html['items'][i]['itemid']), str(html['items'][i]['shopid']));
                     preq = gethtml(purl, headers)
                     pjson = preq.json()
@@ -252,12 +256,12 @@ for row in fldata:
                             images = ''
                             if (isinstance(pjson['data']['ratings'][k]['images'], list)):
                                 images = ",".join(pjson['data']['ratings'][k]['images'])
-                                images = "https://cf.shopee.tw/file/" + images.replace(",",
-                                                                                       ",https://cf.shopee.tw/file/")
-                            sql = "INSERT INTO fa_antshop_goods_comment (user_id, content,shop_id,order_id,goods_id,order_goods_id,suk,images) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+                                images = "https://cf.shopee.sg/file/" + images.replace(",",
+                                                                                       ",https://cf.shopee.sg/file/")
+                            sql = "INSERT INTO fa_wanlshop_goods_comment (user_id, content,shop_id,order_id,goods_id,order_goods_id,suk,images) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
                             val = (user_id, content, shop_id, order_id, goods_id, order_goods_id, suk, images)
-                            mycursor.execute(sql, val)
-                            spuid = mycursor.lastrowid
+                            # mycursor.execute(sql, val)
+                            # spuid = mycursor.lastrowid
                             mydb.commit()
                         pjson = preq.json()
             except:
