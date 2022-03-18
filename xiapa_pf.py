@@ -63,7 +63,7 @@ v2 = 1234
 # f.close()
 
 hea = {
-    'authority': 'shopee.tw',
+    'authority': 'shopee.sg',
     'pragma': 'no-cache',
     'cache-control': 'no-cache',
     'sec-ch-ua': '"Chromium";v="94", "Google Chrome";v="94", ";Not A Brand";v="99"',
@@ -79,7 +79,7 @@ hea = {
     'sec-fetch-site': 'same-origin',
     'sec-fetch-mode': 'cors',
     'sec-fetch-dest': 'empty',
-    'referer': 'https://shopee.tw/iPhone13-%E8%98%8B%E6%9E%9C13-%E8%98%8B%E6%9E%9C%E9%8F%A1%E9%A0%AD%E8%86%9C%E8%98%8B%E6%9E%9C12Promax%E9%8F%A1%E9%A0%AD%E8%86%9CiPhone13%E9%88%A6%E5%90%88%E9%87%91%E5%85%A8%E8%A6%86%E8%93%8B12%E7%82%AB%E5%BD%A9%E9%96%83%E9%91%BDip11%E9%91%BD%E7%9F%B3%E8%B6%85%E8%96%84-i.527105502.13518133767?position=0',
+    'referer': 'https://shopee.sg/iPhone13-%E8%98%8B%E6%9E%9C13-%E8%98%8B%E6%9E%9C%E9%8F%A1%E9%A0%AD%E8%86%9C%E8%98%8B%E6%9E%9C12Promax%E9%8F%A1%E9%A0%AD%E8%86%9CiPhone13%E9%88%A6%E5%90%88%E9%87%91%E5%85%A8%E8%A6%86%E8%93%8B12%E7%82%AB%E5%BD%A9%E9%96%83%E9%91%BDip11%E9%91%BD%E7%9F%B3%E8%B6%85%E8%96%84-i.527105502.13518133767?position=0',
     'accept-language': 'zh-CN,zh;q=0.9',
     'cookie': 'REC_T_ID=a3f6fce2-1fb7-11ec-b032-d09466041c6b; _gcl_au=1.1.1214922703.1632768612; SPC_IA=-1; SPC_F=ouxdxbiZb1POSiYlwddIYkbpGRARJ6c1; _fbp=fb.1.1632768615123.478588372; __BWfp=c1632768616136x877733d29; G_ENABLED_IDPS=google; SPC_ST=".ZHFjUUxnZThqazQxWlNtTtjZRK5C9MGAquxANTWr8XzWiZPSwggdoILVt2KP3/74sZfGt9umBsFx6NRD4+4YiOzYhUH07Mlmzl66u2+KoMG2I1aWqCYxoJd5P8LDYHvWi3ha72knkCwZWUSJONJzfU1b5LWxqcYx4n/zU3BYuYDcstXtShNtwZs14rNVytl6p2BD5qSySClsdjzGabRVEg=="; SPC_U=549058135; SPC_CLIENTID=b3V4ZHhiaVpiMVBPqbfoflcamgckbsqn; SPC_EC=WGtFbFFzcUF1aHQ1WnF4cQfEz1lTMxUOp6PqFOqburpZHXKO3RGyyb98UYrGix391nh+puytD5dpyvCQe/yQJ8T1Oa5ATAip+0zwexzMrFvo6kYJ1k/D5Nf7LG7jaTBeuLhOHfWpUHhteCuo1NGHBTlhG6ezWNc6oe/wYBlUjtQ=; SPC_SI=bfftoctw1.767ox9zbeUisgs9oue9n2bOHfrWoJ5tw; csrftoken=6P4FcvrozTt8J8ExY7c5MY6qaBp2kd5F; AMP_TOKEN=%24NOT_FOUND; _ga=GA1.2.423118293.1632768616; _gid=GA1.2.1160741941.1633060057; cto_bundle=ymHcg19Lc0cyV1YxbFc3ZzlFamp5TUg3M2hHRnVPViUyRnp1eVVsTWQ5eSUyRk1HdjFjZVd0QW5aRXBvVjclMkJ4Wk9mVmVPcTBCOUNNb3V3OGFOdURWYzlhM2xSN3BHQzRqWFdzY0wxTEpYUm1kbWNEcEt6WjRwaWtBUnliZEpJSWtLemgxb2FmV0JpeTZ3RXhua29TcW9scHNHTVhMYnclM0QlM0Q; SPC_T_IV="vuT9UrdcUCYEsqoEaTnlsw=="; SPC_T_ID="z9BtKth6qKiQ4Ya5JIjVyKsMN8Ev/eV+dJtP9znV95LC8yLPIPKPoDOylSZgz8p1jYV5soEEn3Jjq7c0T/ZTF3jzuyp+WXYOKN1vC7fUiXU="; SPC_R_T_ID=z9BtKth6qKiQ4Ya5JIjVyKsMN8Ev/eV+dJtP9znV95LC8yLPIPKPoDOylSZgz8p1jYV5soEEn3Jjq7c0T/ZTF3jzuyp+WXYOKN1vC7fUiXU=; SPC_R_T_IV=vuT9UrdcUCYEsqoEaTnlsw==; SPC_T_ID=z9BtKth6qKiQ4Ya5JIjVyKsMN8Ev/eV+dJtP9znV95LC8yLPIPKPoDOylSZgz8p1jYV5soEEn3Jjq7c0T/ZTF3jzuyp+WXYOKN1vC7fUiXU=; SPC_T_IV=vuT9UrdcUCYEsqoEaTnlsw==; _dc_gtm_UA-61915057-6=1; _ga_RPSBE3TQZZ=GS1.1.1633060048.6.1.1633060506.18',
 }
@@ -258,7 +258,7 @@ for row in fldata:
                                 images = ",".join(pjson['data']['ratings'][k]['images'])
                                 images = "https://cf.shopee.sg/file/" + images.replace(",",
                                                                                        ",https://cf.shopee.sg/file/")
-                            sql = "INSERT INTO fa_wanlshop_goods_comment (user_id, content,shop_id,order_id,goods_id,order_goods_id,suk,images) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+                            sql = "INSERT INTO fa_wanlshop_goods_commentfront (user_id, content,shop_id,order_id,goods_id,order_goods_id,suk,images) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
                             val = (user_id, content, shop_id, order_id, goods_id, order_goods_id, suk, images)
                             mycursor.execute(sql, val)
                             spuid = mycursor.lastrowid
