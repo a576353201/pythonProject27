@@ -175,12 +175,12 @@ for row in fldata:
                     # price= format_currency(price, 'USD', locale='en_US')
                     price = str(price)[:-5]
 
-                    mycursor.execute("select * from fa_wanlshop_goods where proid='" + proid + "'")
+                    mycursor.execute("select * from fa_wanlshop_wholesale where proid='" + proid + "'")
 
                     data = mycursor.fetchall()
                     if (len(data) != 0):
                         continue
-                    sql = 'Insert  Into `fa_wanlshop_goods` (`title`,`image`,`images`,`price`,`category_id`,`shop_id`,`brand_id`,`freight_id`,`grounding`,`specs`,`distribution`,`activity`,`views`,`content`,`proid`) Values (%s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s)'
+                    sql = 'Insert  Into `fa_wanlshop_wholesale` (`title`,`image`,`images`,`price`,`category_id`,`shop_id`,`brand_id`,`freight_id`,`grounding`,`specs`,`distribution`,`activity`,`views`,`content`,`proid`) Values (%s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s)'
                     val = (
                         title, image, images, price, category_id, shop_id, brand_id, freight_id, grounding, specs,
                         distribution,
@@ -194,7 +194,7 @@ for row in fldata:
                     for k in range(len(spu)):
                         spuname = spu[k]['name']
                         item = ",".join(spu[k]['options'])
-                        sql = "INSERT INTO fa_wanlshop_goods_spu (name, item,goods_id) VALUES (%s, %s, %s)"
+                        sql = "INSERT INTO fa_wanlshop_wholesale_spu (name, item,goods_id) VALUES (%s, %s, %s)"
                         val = (spuname, item, goodsid)
                         mycursor.execute(sql, val)
                         spuid = mycursor.lastrowid
@@ -208,7 +208,7 @@ for row in fldata:
                         price = str(price)[:-5]
                         market_price = str(market_price)[:-5]
                         sn = 11
-                        sql = "INSERT INTO fa_wanlshop_goods_sku (difference, price,market_price,stock,goods_id,weigh,sn) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+                        sql = "INSERT INTO fa_wanlshop_wholesale_sku (difference, price,market_price,stock,goods_id,weigh,sn) VALUES (%s,%s,%s,%s,%s,%s,%s)"
                         val = (difference, price, market_price, stock, goodsid, 1, sn)
                         mycursor.execute(sql, val)
                         skuid = mycursor.lastrowid
