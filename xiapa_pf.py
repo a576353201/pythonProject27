@@ -1,3 +1,4 @@
+import MySQLdb
 import requests
 from lxml import etree
 import pandas as pd
@@ -49,7 +50,7 @@ mycursor = mydb.cursor()
 
 # v2 = sys.argv[2]
 
-v1 = '少女内衣'
+v1 = 'pen'
 v2 = 1234
 # v1 = sys.argv[1]
 #
@@ -115,15 +116,16 @@ path = 'pm.csv'
 mycursor.execute("select name,id from fa_wanlshop_category where pid!=0 and image!='2' order by id asc")
 
 fldata = mycursor.fetchall()
- ## 空列表
+## 空列表
 for row in fldata:
     time.sleep(2)
-    qstr = row[0]
+    # qstr = row[0]
+    qstr = "pen"
     v2 = row[1]
     df_link = []
     df_linkstr = 'https://shopee.sg/api/v4/search/search_items?by=relevancy&keyword=%s&limit=20&newest=20&order=desc&page_type=search&scenario=PAGE_GLOBAL_SEARCH&version=2' % (
 
-        #df_linkstr = 'https://my.xiapibuy.com/api/v4/search/search_items?by=relevancy&keyword=%s&limit=20&newest=20&order=desc&page_type=search&scenario=PAGE_GLOBAL_SEARCH&version=2' % (
+        # df_linkstr = 'https://my.xiapibuy.com/api/v4/search/search_items?by=relevancy&keyword=%s&limit=20&newest=20&order=desc&page_type=search&scenario=PAGE_GLOBAL_SEARCH&version=2' % (
 
         str(qstr))
     # df_linkstr='https://shopee.tw/api/v4/search/search_items?by=relevancy&keyword=布質尿布&limit=20&newest=20&order=desc&page_type=search&scenario=PAGE_GLOBAL_SEARCH&version=2'
@@ -186,7 +188,15 @@ for row in fldata:
                         distribution,
                         activity, views, description, proid)
                     print(title)
-                    mycursor.execute(sql, val)
+
+                    # sql = 'Insert  Into `fa_wanlshop_wholesale` (`title`,`image`,`images`,`price`,`category_id`,`shop_id`,`brand_id`,`freight_id`,`grounding`,`specs`,`distribution`,`activity`,`views`,`content`,`proid`) Values (`%s`, `%s`, `%s`, %s, %s, %s,%s, %s, %s, `%s`, %s, %s, %s, `%s`, `%s`)' % (
+                    #     title, image, images, price, category_id, shop_id, brand_id, freight_id, grounding, specs,
+                    #     distribution,
+                    #     activity, views, description, proid)
+                    try:
+                        mycursor.execute(sql, val)
+                    except MySQLdb.Error as e:
+                        print(e)
                     goodsid = mycursor.lastrowid
                     mydb.commit()
                     spu = pitem['tier_variations']
@@ -264,16 +274,8 @@ for row in fldata:
                             spuid = mycursor.lastrowid
                             mydb.commit()
                         pjson = preq.json()
-            except:
-                d = 1
-
-
-
-
-
-
-
-
+            except Exception as err:
+                print("Error %s for execute sql: %s" % (err, 1))
 
 # path0 = 'd:/pm22.csv'
 # df.to_csv(path0, encoding='utf-8', index=False)  # 去掉index，保留头部
