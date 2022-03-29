@@ -187,7 +187,7 @@ for row in fldata:
                         continue
                     sql = 'Insert  Into `fa_wanlshop_wholesale` (`title`,`image`,`images`,`price`,`category_id`,`shop_id`,`brand_id`,`freight_id`,`grounding`,`specs`,`distribution`,`activity`,`views`,`content`,`proid`) Values (%s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s)'
                     val = (
-                        title, image, images, price, category_id, shop_id, brand_id, freight_id, grounding, specs,
+                        title, image, images, price, category_id, -1, brand_id, freight_id, grounding, specs,
                         distribution,
                         activity, views, description, proid)
                     print(title)
@@ -224,8 +224,8 @@ for row in fldata:
                         market_price = market_price * 0.00001 * 0.73
                         # market_price = str(market_price)[:-5]
                         sn = 11
-                        sql = "INSERT INTO fa_wanlshop_wholesale_sku (difference, price,market_price,stock,goods_id,weigh,sn) VALUES (%s,%s,%s,%s,%s,%s,%s)"
-                        val = (difference, price, market_price, stock, goodsid, 1, sn)
+                        sql = "INSERT INTO fa_wanlshop_wholesale_sku (difference, price,market_price,wholesale_price,stock,goods_id,weigh,sn) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
+                        val = (difference, price, market_price,price, stock, goodsid, 1, sn)
                         mycursor.execute(sql, val)
                         skuid = mycursor.lastrowid
                         mydb.commit()
