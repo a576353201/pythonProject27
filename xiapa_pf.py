@@ -175,7 +175,10 @@ for row in fldata:
                     images = ",".join(images)
                     images = "https://cf.shopee.sg/file/" + images.replace(",", ",https://cf.shopee.sg/file/")
                     # price= format_currency(price, 'USD', locale='en_US')
-                    price = str(price)[:-5]
+                    # price = str(price)[:-5]
+                    if(len(str(price))==0):
+                        continue
+                    price = price*0.00001*0.73
 
                     mycursor.execute("select * from fa_wanlshop_wholesale where proid='" + proid + "'")
 
@@ -213,10 +216,13 @@ for row in fldata:
                         # spuname=spu[k]['name']
                         difference = models[k]['name']
                         price = models[k]['price']
+                        if (len(str(price)) == 0):
+                            continue
                         market_price = models[k]['price']
                         stock = models[k]['stock']
-                        price = str(price)[:-5]
-                        market_price = str(market_price)[:-5]
+                        price = price * 0.00001 * 0.73
+                        market_price = market_price * 0.00001 * 0.73
+                        # market_price = str(market_price)[:-5]
                         sn = 11
                         sql = "INSERT INTO fa_wanlshop_wholesale_sku (difference, price,market_price,stock,goods_id,weigh,sn) VALUES (%s,%s,%s,%s,%s,%s,%s)"
                         val = (difference, price, market_price, stock, goodsid, 1, sn)
