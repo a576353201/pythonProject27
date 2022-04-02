@@ -35,10 +35,16 @@ def gethtml(url0, head):
 mydb = mysql.connector.connect(
     host="localhost",
     user="root",
-    passwd="tE9MKDewI5hfA5gT",
+    passwd="de6c574a9aa422a8",
     # database="shopry"
-    database="shopt"
+    database="shopt3"
+
 )
+
+
+
+#mysqli_set_charset(mydb, "utf8mb4")
+
 # mydb = mysql.connector.connect(
 #   host="localhost",
 #   user="wwwhuanl_shop",
@@ -50,11 +56,9 @@ mycursor = mydb.cursor()
 
 # v2 = sys.argv[2]
 
-v1 = 'pen'
-v2 = 1234
-# v1 = sys.argv[1]
-#
-# v2 = sys.argv[2]
+
+
+
 
 # v1 = "rule"
 #
@@ -121,7 +125,7 @@ for row in fldata:
     time.sleep(2)
     # qstr = row[0]
     qstr = "pen"
-    v2 = row[1]
+     #v2 = row[1]
     df_link = []
     df_linkstr = 'https://shopee.sg/api/v4/search/search_items?by=relevancy&keyword=%s&limit=20&newest=20&order=desc&page_type=search&scenario=PAGE_GLOBAL_SEARCH&version=2' % (
 
@@ -185,9 +189,9 @@ for row in fldata:
                     data = mycursor.fetchall()
                     if (len(data) != 0):
                         continue
-                    sql = 'Insert  Into `fa_wanlshop_wholesale` (`title`,`image`,`images`,`price`,`category_id`,`shop_id`,`brand_id`,`freight_id`,`grounding`,`specs`,`distribution`,`activity`,`views`,`content`,`proid`) Values (%s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s)'
+                    sql = 'Insert  Into `fa_wanlshop_wholesale` (`title`,`image`,`images`,`price`,`wholesale_price`,`category_id`,`shop_id`,`brand_id`,`freight_id`,`grounding`,`specs`,`distribution`,`activity`,`views`,`content`,`proid`) Values (%s,%s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s)'
                     val = (
-                        title, image, images, price, category_id, -1, brand_id, freight_id, grounding, specs,
+                        title, image, images, price,price, category_id, -1, brand_id, freight_id, grounding, specs,
                         distribution,
                         activity, views, description, proid)
                     print(title)
