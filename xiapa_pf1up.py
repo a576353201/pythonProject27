@@ -135,33 +135,38 @@ for row in fldata:
 
     mycursor.execute(sql, id)
     mydb.commit()
+    sql = 'delete from fa_wanlshop_wholesale_sku where goods_id=%s'
+    id1 = (row[1],)
+
+    mycursor.execute(sql, id1)
+    mydb.commit()
     spu = pitem['tier_variations']
     models = pitem['models']
     for k in range(len(spu)):
         spuname = spu[k]['name']
-    #     item = ",".join(html['items'][i]['item_basic']['tier_variations'][k]['options'])
-    #     sql = "INSERT INTO fa_wanlshop_wholesale_spu (name, item,goods_id) VALUES (%s, %s, %s)"
-    #     val = (spuname, item, goodsid)
-    #     mycursor.execute(sql, val)
-    #     spuid = mycursor.lastrowid
-    #     mydb.commit()
-    # for k in range(len(models)):
-    #     # spuname=spu[k]['name']
-    #     difference = models[k]['name']
-    #     price = models[k]['price']
-    #     if (len(str(price)) == 0):
-    #         continue
-    #     market_price = models[k]['price']
-    #     stock = models[k]['stock']
-    #     price = price * 0.00001 * 0.73
-    #     market_price = market_price * 0.00001 * 0.73
-    #     # market_price = str(market_price)[:-5]
-    #     sn = 11
-    #     sql = "INSERT INTO fa_wanlshop_wholesale_sku (difference, price,market_price,wholesale_price,stock,goods_id,weigh,sn) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
-    #     val = (difference, price, market_price, price, stock, goodsid, 1, sn)
-    #     mycursor.execute(sql, val)
-    #     skuid = mycursor.lastrowid
-    #     mydb.commit()
+        item = ",".join(spu[k]['options'])
+        sql = "INSERT INTO fa_wanlshop_wholesale_spu (name, item,goods_id) VALUES (%s, %s, %s)"
+        val = (spuname, item, row[1])
+        mycursor.execute(sql, val)
+        spuid = mycursor.lastrowid
+        mydb.commit()
+    for k in range(len(models)):
+        # spuname=spu[k]['name']
+        difference = models[k]['name']
+        price = models[k]['price']
+        if (len(str(price)) == 0):
+            continue
+        market_price = models[k]['price']
+        stock = models[k]['stock']
+        price = price * 0.00001 * 0.73
+        market_price = market_price * 0.00001 * 0.73
+        # market_price = str(market_price)[:-5]
+        sn = 11
+        sql = "INSERT INTO fa_wanlshop_wholesale_sku (difference, price,market_price,wholesale_price,stock,goods_id,weigh,sn) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
+        val = (difference, price, market_price, price, stock, row[1], 1, sn)
+        mycursor.execute(sql, val)
+        skuid = mycursor.lastrowid
+        mydb.commit()
     # a2 = html['items'][i]['item_basic']['name']
 
 
