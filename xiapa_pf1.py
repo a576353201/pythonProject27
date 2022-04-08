@@ -168,7 +168,7 @@ for row in fldata:
                         str(html['items'][i]['itemid']), str(html['items'][i]['shopid']));
                     preq = gethtml(purl, hea)
                     pjson = preq.json()
-                    pitem = pjson['item']
+                    pitem = pjson['data']
                     try:
                         description = "22"
                     except:
