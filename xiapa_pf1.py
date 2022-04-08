@@ -35,7 +35,7 @@ def gethtml(url0, head):
 mydb = mysql.connector.connect(
     host="localhost",
     user="root",
-    passwd="de6c574a9aa422a8",
+    passwd="tE9MKDewI5hfA5gT",
     # database="shopry"
     database="shopt3"
 
@@ -60,7 +60,7 @@ mycursor = mydb.cursor()
 
 
 
-# v1 = "rule"
+v1 = "rule"
 #
 # f = open('C:\\Users\\Administrator\\PycharmProjects\\pythonProject2\\1.txt', 'w')
 # print('OKOKOK')
@@ -127,11 +127,8 @@ for row in fldata:
     # qstr = "pen"
     v2 = row[1]
     df_link = []
-    df_linkstr = 'https://shopee.sg/api/v4/search/search_items?by=relevancy&keyword=%s&limit=20&newest=20&order=desc&page_type=search&scenario=PAGE_GLOBAL_SEARCH&version=2' % (
+    df_linkstr = 'https://shopee.sg/api/v4/search/search_items?by=relevancy&keyword=ice%20silk%20four-piece%20set%20tencel%20nude%20sleeping%20sheet%E5%86%B0%E4%B8%9D%E5%9B%9B%E4%BB%B6%E5%A5%97%E5%A4%A9%E4%B8%9D%E8%A3%B8%E7%9D%A1%E5%BA%8A%E5%8D%95%E8%A2%AB%E7%BD%A9%E5%BA%8A%E7%AC%A0%E8%A2%AB%E5%A5%97%E4%B8%89%E4%BB%B6%E5%A5%97%E6%AC%A7%E5%BC%8F%E4%B8%9D%E6%BB%91%E5%BA%8A%E4%B8%8A%E7%94%A8%E5%93%81&limit=20&newest=0&order=desc&page_type=search&scenario=PAGE_GLOBAL_SEARCH&version=2'
 
-        # df_linkstr = 'https://my.xiapibuy.com/api/v4/search/search_items?by=relevancy&keyword=%s&limit=20&newest=20&order=desc&page_type=search&scenario=PAGE_GLOBAL_SEARCH&version=2' % (
-
-        str(qstr))
     # df_linkstr='https://shopee.tw/api/v4/search/search_items?by=relevancy&keyword=布質尿布&limit=20&newest=20&order=desc&page_type=search&scenario=PAGE_GLOBAL_SEARCH&version=2'
     df_link.append(df_linkstr)
     for link in range(0, len(df_link)):
@@ -165,15 +162,15 @@ for row in fldata:
                     distribution = 'false'
                     activity = 'false'
                     views = 0
-                    description = ''
+                    description = '22'
                     proid = str(html['items'][i]['itemid']) + ',' + str(html['items'][i]['shopid'])
-                    purl = 'https://shopee.sg/api/v2/item/get?itemid=%s&shopid=%s' % (
+                    purl = 'https://shopee.sg/api/v4/item/get?itemid=%s&shopid=%s' % (
                         str(html['items'][i]['itemid']), str(html['items'][i]['shopid']));
                     preq = gethtml(purl, hea)
                     pjson = preq.json()
                     pitem = pjson['item']
                     try:
-                        description = pitem['description']
+                        description = "22"
                     except:
                         description = '.'
                     images = ",".join(images)
@@ -187,8 +184,8 @@ for row in fldata:
                     mycursor.execute("select * from fa_wanlshop_wholesale where proid='" + proid + "'")
 
                     data = mycursor.fetchall()
-                    if (len(data) != 0):
-                        continue
+                    # if (len(data) != 0):
+                    #     continue
                     sql = 'Insert  Into `fa_wanlshop_wholesale` (`title`,`image`,`images`,`price`,`wholesale_price`,`category_id`,`shop_id`,`brand_id`,`freight_id`,`grounding`,`specs`,`distribution`,`activity`,`views`,`content`,`proid`) Values (%s,%s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s)'
                     val = (
                         title, image, images, price,price, category_id, -1, brand_id, freight_id, grounding, specs,
@@ -210,7 +207,7 @@ for row in fldata:
                     models = pitem['models']
                     for k in range(len(spu)):
                         spuname = spu[k]['name']
-                        item = ",".join(spu[k]['options'])
+                        item = ",".join(html['items'][i]['item_basic']['tier_variations'][k]['options'])
                         sql = "INSERT INTO fa_wanlshop_wholesale_spu (name, item,goods_id) VALUES (%s, %s, %s)"
                         val = (spuname, item, goodsid)
                         mycursor.execute(sql, val)
