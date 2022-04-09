@@ -170,7 +170,14 @@ for row in fldata:
     # a2 = html['items'][i]['item_basic']['name']
 
 
+
     adr = ("Yellow Garden 2",)
+    ts=time.time()
+    sql = "update fa_wanlshop_wholesale set updatetime=%s where id=%s"
+    id = (ts,row[1])
+    mycursor.execute(sql, id)
+    spuid = mycursor.lastrowid
+    mydb.commit()
 
 #     try:
 #         description = "22"
