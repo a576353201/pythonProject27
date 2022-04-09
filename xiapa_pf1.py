@@ -162,7 +162,7 @@ for row in fldata:
                     distribution = 'false'
                     activity = 'false'
                     views = 0
-                    description = '22'
+                    description = ''
                     proid = str(html['items'][i]['itemid']) + ',' + str(html['items'][i]['shopid'])
                     purl = 'https://shopee.sg/api/v4/item/get?itemid=%s&shopid=%s' % (
                         str(html['items'][i]['itemid']), str(html['items'][i]['shopid']));
@@ -170,7 +170,7 @@ for row in fldata:
                     pjson = preq.json()
                     pitem = pjson['data']
                     try:
-                        description = "22"
+                        description = pitem['description']
                     except:
                         description = '.'
                     images = ",".join(images)
@@ -184,8 +184,8 @@ for row in fldata:
                     mycursor.execute("select * from fa_wanlshop_wholesale where proid='" + proid + "'")
 
                     data = mycursor.fetchall()
-                    # if (len(data) != 0):
-                    #     continue
+                    if (len(data) != 0):
+                        continue
                     sql = 'Insert  Into `fa_wanlshop_wholesale` (`title`,`image`,`images`,`price`,`wholesale_price`,`category_id`,`shop_id`,`brand_id`,`freight_id`,`grounding`,`specs`,`distribution`,`activity`,`views`,`content`,`proid`) Values (%s,%s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s)'
                     val = (
                         title, image, images, price,price, category_id, -1, brand_id, freight_id, grounding, specs,

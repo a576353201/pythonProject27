@@ -35,7 +35,7 @@ def gethtml(url0, head):
 mydb = mysql.connector.connect(
     host="localhost",
     user="root",
-    passwd="de6c574a9aa422a8",
+    passwd="tE9MKDewI5hfA5gT",
     # database="shopry"
     database="shopt3"
 
@@ -102,7 +102,7 @@ df = DataFrame({
 
 })
 
-qstr = v1
+# qstr = v1
 qstr1 = 'pen5'
 path = 'pm.csv'
 # df_type = list(pd.read_csv(path)['类别'])
@@ -124,15 +124,15 @@ fldata = mycursor.fetchall()
 for row in fldata:
     time.sleep(2)
     qstr = row[0]
-    # qstr = "pen"
+    qstr = "pen"
     v2 = row[1]
     df_link = []
-    df_linkstr = 'https://shopee.sg/api/v4/search/search_items?by=relevancy&keyword=%s&limit=20&newest=20&order=desc&page_type=search&scenario=PAGE_GLOBAL_SEARCH&version=2' % (
-
-        # df_linkstr = 'https://my.xiapibuy.com/api/v4/search/search_items?by=relevancy&keyword=%s&limit=20&newest=20&order=desc&page_type=search&scenario=PAGE_GLOBAL_SEARCH&version=2' % (
-
-        str(qstr))
-    # df_linkstr='https://shopee.tw/api/v4/search/search_items?by=relevancy&keyword=布質尿布&limit=20&newest=20&order=desc&page_type=search&scenario=PAGE_GLOBAL_SEARCH&version=2'
+    # df_linkstr = 'https://shopee.sg/api/v4/search/search_items?by=relevancy&keyword=%s&limit=20&newest=20&order=desc&page_type=search&scenario=PAGE_GLOBAL_SEARCH&version=2' % (
+    #
+    #     # df_linkstr = 'https://my.xiapibuy.com/api/v4/search/search_items?by=relevancy&keyword=%s&limit=20&newest=20&order=desc&page_type=search&scenario=PAGE_GLOBAL_SEARCH&version=2' % (
+    #
+    #     str(qstr))
+    df_linkstr='https://shopee.sg/api/v4/search/search_items?by=relevancy&keyword=ice%20silk%20four-piece%20set%20tencel%20nude%20sleeping%20sheet%E5%86%B0%E4%B8%9D%E5%9B%9B%E4%BB%B6%E5%A5%97%E5%A4%A9%E4%B8%9D%E8%A3%B8%E7%9D%A1%E5%BA%8A%E5%8D%95%E8%A2%AB%E7%BD%A9%E5%BA%8A%E7%AC%A0%E8%A2%AB%E5%A5%97%E4%B8%89%E4%BB%B6%E5%A5%97%E6%AC%A7%E5%BC%8F%E4%B8%9D%E6%BB%91%E5%BA%8A%E4%B8%8A%E7%94%A8%E5%93%81w7d_1bz5z4&limit=20&newest=0&order=desc&page_type=search&scenario=PAGE_GLOBAL_SEARCH&version=2'
     df_link.append(df_linkstr)
     for link in range(0, len(df_link)):
         time.sleep(2)
@@ -167,11 +167,11 @@ for row in fldata:
                     views = 0
                     description = ''
                     proid = str(html['items'][i]['itemid']) + ',' + str(html['items'][i]['shopid'])
-                    purl = 'https://shopee.sg/api/v2/item/get?itemid=%s&shopid=%s' % (
+                    purl = 'https://shopee.sg/api/v4/item/get?itemid=%s&shopid=%s' % (
                         str(html['items'][i]['itemid']), str(html['items'][i]['shopid']));
                     preq = gethtml(purl, hea)
                     pjson = preq.json()
-                    pitem = pjson['item']
+                    pitem = pjson['data']
                     try:
                         description = pitem['description']
                     except:

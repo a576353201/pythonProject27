@@ -35,7 +35,7 @@ def gethtml(url0, head):
 mydb = mysql.connector.connect(
     host="localhost",
     user="root",
-    passwd="tE9MKDewI5hfA5gT",
+    passwd="50e1dc3480be2f7f",
     # database="shopry"
     database="shopt3"
 
@@ -117,7 +117,8 @@ path = 'pm.csv'
 #     f.close()
 
 
-mycursor.execute("select proid,id from fa_wanlshop_wholesale where updatetime is null order by id asc")
+#mycursor.execute("select proid,id from fa_wanlshop_goods where id=391")
+mycursor.execute("select proid,id from fa_wanlshop_goods where updatetime is null order by id asc")
 
 fldata = mycursor.fetchall()
 ## 空列表
@@ -132,12 +133,12 @@ for row in fldata:
     pitem = pjson['data']
     if pitem is None:
         continue
-    sql = 'delete from fa_wanlshop_wholesale_spu where goods_id=%s'
+    sql = 'delete from fa_wanlshop_goods_spu where goods_id=%s'
     id = (row[1],)
 
     mycursor.execute(sql, id)
     mydb.commit()
-    sql = 'delete from fa_wanlshop_wholesale_sku where goods_id=%s'
+    sql = 'delete from fa_wanlshop_goods_sku where goods_id=%s'
     id1 = (row[1],)
 
     mycursor.execute(sql, id1)
@@ -147,7 +148,7 @@ for row in fldata:
     for k in range(len(spu)):
         spuname = spu[k]['name']
         item = ",".join(spu[k]['options'])
-        sql = "INSERT INTO fa_wanlshop_wholesale_spu (name, item,goods_id) VALUES (%s, %s, %s)"
+        sql = "INSERT INTO fa_wanlshop_goods_spu (name, item,goods_id) VALUES (%s, %s, %s)"
         val = (spuname, item, row[1])
         mycursor.execute(sql, val)
         spuid = mycursor.lastrowid
@@ -164,7 +165,7 @@ for row in fldata:
         market_price = market_price * 0.00001 * 0.73
         # market_price = str(market_price)[:-5]
         sn = 11
-        sql = "INSERT INTO fa_wanlshop_wholesale_sku (difference, price,market_price,wholesale_price,stock,goods_id,weigh,sn) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
+        sql = "INSERT INTO fa_wanlshop_goods_sku (difference, price,market_price,wholesale_price,stock,goods_id,weigh,sn) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
         val = (difference, price, market_price, price, stock, row[1], 1, sn)
         mycursor.execute(sql, val)
         skuid = mycursor.lastrowid
@@ -175,7 +176,7 @@ for row in fldata:
 
     adr = ("Yellow Garden 2",)
     ts=time.time()
-    sql = "update fa_wanlshop_wholesale set updatetime=%s where id=%s"
+    sql = "update fa_wanlshop_goods set updatetime=%s where id=%s"
     id = (ts,row[1])
     mycursor.execute(sql, id)
     spuid = mycursor.lastrowid
