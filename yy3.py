@@ -2,6 +2,7 @@ import re
 
 import zhconv
 import os
+from googletrans import Translator
 allFileNum = 0
 
 def repl_func(matched):
@@ -54,6 +55,13 @@ def printPath(level, path):
             a = f.read()
             result = re.findall('[\u4e00-\u9fa5]+', a)
             thstr=re.sub('[\u4e00-\u9fa5]+', repl_func, a)
+            translator = Translator()
+            # translator = Translator(service_urls=[
+            #     'translate.google.com',
+            #     'translate.google.co.kr',
+            # ])
+            fy=translator.translate('我是中国人.', dest='en').text
+
 
         string2 = transform2_zh_hant(a)
         with open(path+ '/' +fl, "w+",encoding='utf-8',errors='ignore') as fw:
