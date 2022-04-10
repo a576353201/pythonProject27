@@ -1,6 +1,13 @@
+import re
+
 import zhconv
 import os
 allFileNum = 0
+
+def repl_func(matched):
+    if matched:
+        text = matched.group(0)
+        return "$$"+str(text)+"$$"
 def printPath(level, path):
     global allFileNum
     ''''' 
@@ -37,15 +44,21 @@ def printPath(level, path):
             printPath((int(dirList[0]) + 1), path + '/' + dl)
     for fl in fileList:
         ext=os.path.splitext(fl)[-1]
-        if(ext=='.js'):
+        if(ext!='.vue'):
             continue
+        # if(ext=='.js'):
+        #     continue
         # 打印文件
         print ('-s2' * (int(dirList[0])), fl)
         with open(path+ '/' +fl,encoding = "utf-8",errors='ignore') as f:
             a = f.read()
+            result = re.findall('[\u4e00-\u9fa5]+', a)
+            thstr=re.sub('[\u4e00-\u9fa5]+', repl_func, a)
+
         string2 = transform2_zh_hant(a)
         with open(path+ '/' +fl, "w+",encoding='utf-8',errors='ignore') as fw:
-            fw.write(string2)
+            d=2
+            # fw.write(string2)
         # 随便计算一下有多少个文件
         allFileNum = allFileNum + 1
 
