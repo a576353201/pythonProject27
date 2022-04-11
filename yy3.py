@@ -54,13 +54,21 @@ def printPath(level, path):
         with open(path+ '/' +fl,encoding = "utf-8",errors='ignore') as f:
             a = f.read()
             result = re.findall('[\u4e00-\u9fa5]+', a)
+            if len(result)==0:
+                continue
             thstr=re.sub('[\u4e00-\u9fa5]+', repl_func, a)
             translator = Translator()
             # translator = Translator(service_urls=[
             #     'translate.google.com',
             #     'translate.google.co.kr',
             # ])
-            fy=translator.translate('我是中国人.', dest='en').text
+            try:
+                fy=translator.translate('我是中国人.', dest='en').text
+                translations = translator.translate(['The quick brown fox', 'jumps over', 'the lazy dog'], dest='ko')
+                for translation in translations:
+                    print(translation.origin, ' -> ', translation.text)
+            except:
+                d=1
 
 
         string2 = transform2_zh_hant(a)
