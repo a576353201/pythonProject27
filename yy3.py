@@ -4,12 +4,16 @@ import zhconv
 import os
 from googletrans import Translator
 allFileNum = 0
-
+kk = 0
 def repl_func(matched):
+    global kk
+
     if matched:
+        kk += 1
         text = matched.group(0)
-        return "$$"+str(text)+"$$"
+        return "$"+kk+"$"+str(text)+"$"+kk+"$"
 def printPath(level, path):
+    global kk
     global allFileNum
     ''''' 
     打印一个目录下的所有文件夹和文件 
@@ -56,19 +60,23 @@ def printPath(level, path):
             result = re.findall('[\u4e00-\u9fa5]+', a)
             if len(result)==0:
                 continue
+
+
             thstr=re.sub('[\u4e00-\u9fa5]+', repl_func, a)
+            kk=0
             translator = Translator()
             # translator = Translator(service_urls=[
             #     'translate.google.com',
             #     'translate.google.co.kr',
             # ])
-            try:
-                fy=translator.translate('我是中国人.', dest='en').text
-                translations = translator.translate(['The quick brown fox', 'jumps over', 'the lazy dog'], dest='ko')
-                for translation in translations:
-                    print(translation.origin, ' -> ', translation.text)
-            except:
-                d=1
+
+        fy=translator.translate('我是中国人.', dest='en').text
+        for result1 in result:
+            fy = translator.translate(result1, dest='en').text
+            dd=2
+
+        #
+
 
 
         string2 = transform2_zh_hant(a)
