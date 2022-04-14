@@ -35,7 +35,7 @@ def gethtml(url0, head):
 mydb = mysql.connector.connect(
     host="localhost",
     user="root",
-    passwd="50e1dc3480be2f7f",
+    passwd="tE9MKDewI5hfA5gT",
     # database="shopry"
     database="shopt3"
 
@@ -58,9 +58,9 @@ mycursor = mydb.cursor()
 
 
 
-v1 = sys.argv[1]
+v1 ="gucci body 2s dress" #sys.argv[1]
 #
-v2 = sys.argv[2]
+v2 = "316" #sys.argv[2]
 
 # v1 = "rule"
 #

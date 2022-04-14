@@ -1,3 +1,5 @@
+import random
+
 import MySQLdb
 import requests
 from lxml import etree
@@ -221,6 +223,8 @@ for row in fldata:
                             continue
                         market_price = models[k]['price']
                         stock = models[k]['stock']
+                        stock=9999
+                        # stock =(stock1, random.randint(6000,9999))[stock1 ==0]
                         price = price * 0.00001 * 0.73
                         market_price = market_price * 0.00001 * 0.73
                         # market_price = str(market_price)[:-5]
