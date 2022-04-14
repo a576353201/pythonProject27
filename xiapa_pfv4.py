@@ -172,9 +172,12 @@ for row in fldata:
                     activity = 'false'
                     views = 0
                     description = ''
+                    # https: // shopee.sg / api / v4 / item / get?itemid = 10783071012 & shopid = 255554430
                     proid = str(html['items'][i]['itemid']) + ',' + str(html['items'][i]['shopid'])
                     purl = 'https://shopee.sg/api/v4/item/get?itemid=%s&shopid=%s' % (
                         str(html['items'][i]['itemid']), str(html['items'][i]['shopid']));
+                    # purl='https://shopee.sg/api/v4/item/get?itemid=10783071012&shopid=255554430'
+
                     preq = gethtml(purl, hea)
                     pjson = preq.json()
                     pitem = pjson['data']
@@ -213,11 +216,13 @@ for row in fldata:
                         except MySQLdb.Error as e:
                             print(e)
                         goodsid = mycursor.lastrowid
-                        mydb.commit()
+                        # mydb.commit()
                         spu = pitem['tier_variations']
                         models = pitem['models']
                         for k in range(len(spu)):
                             spuname = spu[k]['name']
+                            if(spuname.strip()==''):
+                                continue
                             item = ",".join(spu[k]['options'])
                             sql = "INSERT INTO fa_wanlshop_wholesale_spu (name, item,goods_id) VALUES (%s, %s, %s)"
                             val = (spuname, item, goodsid)
@@ -228,6 +233,9 @@ for row in fldata:
                         for k in range(len(models)):
                             # spuname=spu[k]['name']
                             difference = models[k]['name']
+                            spuname = spu[k]['name']
+                            if (difference.strip() == ''):
+                                continue
                             price = models[k]['price']
                             if (len(str(price)) == 0):
                                 continue
@@ -248,9 +256,11 @@ for row in fldata:
                         mydb.rollback()
                         print(e)
                     finally:
-                        mycursor.close()
+                        if (spuname.strip() == ''):
+                            mydb.rollback()
+                        if (difference.strip() == ''):
+                            mydb.rollback()
                         mydb.commit()
-                        mydb.close()
 
                     a2 = html['items'][i]['item_basic']['name']
 
@@ -306,5 +316,7 @@ for row in fldata:
             except Exception as err:
                 print("Error %s for execute sql: %s" % (err, 1))
 
+mycursor.close()
+mydb.close()
 # path0 = 'd:/pm22.csv'
 # df.to_csv(path0, encoding='utf-8', index=False)  # 去掉index，保留头部
