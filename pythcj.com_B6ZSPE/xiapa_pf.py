@@ -169,7 +169,7 @@ for row in fldata:
                     views = 0
                     description = ''
                     proid = str(html['items'][i]['itemid']) + ',' + str(html['items'][i]['shopid'])
-                    purl = 'https://shopee.sg/api/v4/item/get?itemid=%s&shopid=%s' % (
+                    purl = 'https://shopee.sg/api/v2/item/get?itemid=%s&shopid=%s' % (
                         str(html['items'][i]['itemid']), str(html['items'][i]['shopid']));
                     preq = gethtml(purl, hea)
                     pjson = preq.json()

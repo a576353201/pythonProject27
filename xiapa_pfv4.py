@@ -10,6 +10,8 @@ from babel.numbers import format_currency
 import re
 
 
+# 16341031501,191801217
+# [Gift Item] Valentino Patent Leather Large Size Rivet High Heels Sandals V Home Women's Shoes Single
 # https://shopee.tw/api/v2/item/get_ratings?flag=1&itemid=4058929120&limit=3&offset=0&shopid=322104456
 def gethtml(url0, head):
     i = 0
@@ -58,7 +60,8 @@ mycursor = mydb.cursor()
 
 
 
-v1 ="gucci body 2s dress" #sys.argv[1]
+# v1 ="gucci%20body%202s%20dress" #sys.argv[1]
+v1 ="%5Bgift%20item%5D%20valentino%20patent%20leather%20large%20size%20rivet%20high%20heels%20sandals%20v%20home%20women%27s%20shoes%20single" #sys.argv[1]
 #
 v2 = "316" #sys.argv[2]
 
@@ -129,7 +132,8 @@ for row in fldata:
     #qstr = "pen"
      #v2 = row[1]
     df_link = []
-    df_linkstr = 'https://shopee.sg/api/v4/search/search_items?by=relevancy&keyword=%s&limit=20&newest=20&order=desc&page_type=search&scenario=PAGE_GLOBAL_SEARCH&version=2' % (
+
+    df_linkstr = 'https://shopee.sg/api/v4/search/search_items?by=relevancy&keyword=%s&limit=60&newest=0&order=desc&page_type=search&scenario=PAGE_GLOBAL_SEARCH&version=2' % (
 
         # df_linkstr = 'https://my.xiapibuy.com/api/v4/search/search_items?by=relevancy&keyword=%s&limit=20&newest=20&order=desc&page_type=search&scenario=PAGE_GLOBAL_SEARCH&version=2' % (
 
@@ -173,7 +177,8 @@ for row in fldata:
                         str(html['items'][i]['itemid']), str(html['items'][i]['shopid']));
                     preq = gethtml(purl, hea)
                     pjson = preq.json()
-                    pitem = pjson['item']
+                    pitem = pjson['data']
+                    # pitem = pjson['item']
                     try:
                         description = pitem['description']
                     except:
@@ -191,50 +196,62 @@ for row in fldata:
                     data = mycursor.fetchall()
                     if (len(data) != 0):
                         continue
-                    sql = 'Insert  Into `fa_wanlshop_wholesale` (`title`,`image`,`images`,`price`,`wholesale_price`,`category_id`,`shop_id`,`brand_id`,`freight_id`,`grounding`,`specs`,`distribution`,`activity`,`views`,`content`,`proid`) Values (%s,%s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s)'
-                    val = (
-                        title, image, images, price,price, category_id, -1, brand_id, freight_id, grounding, specs,
-                        distribution,
-                        activity, views, description, proid)
-                    print(title)
-
-                    # sql = 'Insert  Into `fa_wanlshop_wholesale` (`title`,`image`,`images`,`price`,`category_id`,`shop_id`,`brand_id`,`freight_id`,`grounding`,`specs`,`distribution`,`activity`,`views`,`content`,`proid`) Values (`%s`, `%s`, `%s`, %s, %s, %s,%s, %s, %s, `%s`, %s, %s, %s, `%s`, `%s`)' % (
-                    #     title, image, images, price, category_id, shop_id, brand_id, freight_id, grounding, specs,
-                    #     distribution,
-                    #     activity, views, description, proid)
                     try:
-                        mycursor.execute(sql, val)
-                    except MySQLdb.Error as e:
+                        sql = 'Insert  Into `fa_wanlshop_wholesale` (`title`,`image`,`images`,`price`,`wholesale_price`,`category_id`,`shop_id`,`brand_id`,`freight_id`,`grounding`,`specs`,`distribution`,`activity`,`views`,`content`,`proid`) Values (%s,%s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s)'
+                        val = (
+                            title, image, images, price, price, category_id, -1, brand_id, freight_id, grounding, specs,
+                            distribution,
+                            activity, views, description, proid)
+                        print(title)
+
+                        # sql = 'Insert  Into `fa_wanlshop_wholesale` (`title`,`image`,`images`,`price`,`category_id`,`shop_id`,`brand_id`,`freight_id`,`grounding`,`specs`,`distribution`,`activity`,`views`,`content`,`proid`) Values (`%s`, `%s`, `%s`, %s, %s, %s,%s, %s, %s, `%s`, %s, %s, %s, `%s`, `%s`)' % (
+                        #     title, image, images, price, category_id, shop_id, brand_id, freight_id, grounding, specs,
+                        #     distribution,
+                        #     activity, views, description, proid)
+                        try:
+                            mycursor.execute(sql, val)
+                        except MySQLdb.Error as e:
+                            print(e)
+                        goodsid = mycursor.lastrowid
+                        mydb.commit()
+                        spu = pitem['tier_variations']
+                        models = pitem['models']
+                        for k in range(len(spu)):
+                            spuname = spu[k]['name']
+                            item = ",".join(spu[k]['options'])
+                            sql = "INSERT INTO fa_wanlshop_wholesale_spu (name, item,goods_id) VALUES (%s, %s, %s)"
+                            val = (spuname, item, goodsid)
+                            mycursor.execute(sql, val)
+                            spuid = mycursor.lastrowid
+                            # mydb.commit()
+                            dd = 1
+                        for k in range(len(models)):
+                            # spuname=spu[k]['name']
+                            difference = models[k]['name']
+                            price = models[k]['price']
+                            if (len(str(price)) == 0):
+                                continue
+                            market_price = models[k]['price']
+                            stock = models[k]['stock']
+                            price = price * 0.00001 * 0.73
+                            market_price = market_price * 0.00001 * 0.73
+                            # market_price = str(market_price)[:-5]
+                            sn = 11
+                            sql = "INSERT INTO fa_wanlshop_wholesale_sku (difference, price,market_price,wholesale_price,stock,goods_id,weigh,sn) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
+                            val = (difference, price, market_price, price, stock, goodsid, 1, sn)
+                            mycursor.execute(sql, val)
+                            skuid = mycursor.lastrowid
+                            # mydb.commit()
+                            bb = 1
+                    except Exception as e:
+                        # cursor.close()  # 先关游标
+                        mydb.rollback()
                         print(e)
-                    goodsid = mycursor.lastrowid
-                    mydb.commit()
-                    spu = pitem['tier_variations']
-                    models = pitem['models']
-                    for k in range(len(spu)):
-                        spuname = spu[k]['name']
-                        item = ",".join(spu[k]['options'])
-                        sql = "INSERT INTO fa_wanlshop_wholesale_spu (name, item,goods_id) VALUES (%s, %s, %s)"
-                        val = (spuname, item, goodsid)
-                        mycursor.execute(sql, val)
-                        spuid = mycursor.lastrowid
+                    finally:
+                        mycursor.close()
                         mydb.commit()
-                    for k in range(len(models)):
-                        # spuname=spu[k]['name']
-                        difference = models[k]['name']
-                        price = models[k]['price']
-                        if (len(str(price)) == 0):
-                            continue
-                        market_price = models[k]['price']
-                        stock = models[k]['stock']
-                        price = price * 0.00001 * 0.73
-                        market_price = market_price * 0.00001 * 0.73
-                        # market_price = str(market_price)[:-5]
-                        sn = 11
-                        sql = "INSERT INTO fa_wanlshop_wholesale_sku (difference, price,market_price,wholesale_price,stock,goods_id,weigh,sn) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
-                        val = (difference, price, market_price,price, stock, goodsid, 1, sn)
-                        mycursor.execute(sql, val)
-                        skuid = mycursor.lastrowid
-                        mydb.commit()
+                        mydb.close()
+
                     a2 = html['items'][i]['item_basic']['name']
 
                     headers = {
