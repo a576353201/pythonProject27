@@ -37,8 +37,7 @@ def gethtml(url0, head):
 mydb = mysql.connector.connect(
     host="localhost",
     user="root",
-    passwd="tE9MKDewI5hfA5gT",
-    # database="shopry"
+    passwd="50e1dc3480be2f7f",
     database="shopt3"
 
 )
@@ -126,7 +125,7 @@ path = 'pm.csv'
 
 mycursor.execute("select name,id from fa_wanlshop_category where pid!=0 and image!='2' order by id asc")
 
-fldata = mycursor.fetchone()
+fldata = mycursor.fetchall()
 ## 空列表
 for row in fldata:
     time.sleep(2)
@@ -318,7 +317,7 @@ for row in fldata:
             except Exception as err:
                 print("Error %s for execute sql: %s" % (err, 1))
 
-mycursor.close()
-mydb.close()
+# mycursor.close()
+# mydb.close()
 # path0 = 'd:/pm22.csv'
 # df.to_csv(path0, encoding='utf-8', index=False)  # 去掉index，保留头部
