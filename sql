@@ -14,18 +14,13 @@ update   fa_wanlshop_goods_sku s,fa_wanlshop_goods g set  s.price=s. market_pric
 
 分组查询次数：
 SELECT
-fa_wanlshop_goods_spu.id,
-fa_wanlshop_goods_spu.goods_id,
-fa_wanlshop_goods_spu.`name`,
-fa_wanlshop_goods_spu.item,
-fa_wanlshop_goods_spu.createtime,
-fa_wanlshop_goods_spu.updatetime,
-fa_wanlshop_goods_spu.deletetime,
-fa_wanlshop_goods_spu.`status`
+
+goods_id,
+
 FROM
 fa_wanlshop_goods_spu
 GROUP BY
-fa_wanlshop_goods_spu.goods_id
+goods_id
 HAVING count(goods_id) >1
 
 
@@ -42,3 +37,14 @@ on k.goods_id=s.goods_id
 WHERE k.difference not like  "%,%" GROUP BY
 s.goods_id
 HAVING count(s.goods_id) >1
+
+
+SELECT s.goods_id,
+k.proid
+FROM fa_wanlshop_goods as k LEFT JOIN  fa_wanlshop_goods_spu as s
+on k.id=s.goods_id
+ GROUP BY
+s.goods_id
+HAVING count(s.goods_id) >1
+
+update fa_wanlshop_goods set proid=(SELECT proid FROM fa_wanlshop_wholesale where fa_wanlshop_goods.wholesale_id= fa_wanlshop_wholesale.id)
