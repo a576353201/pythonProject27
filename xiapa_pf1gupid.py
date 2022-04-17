@@ -118,16 +118,16 @@ path = 'pm.csv'
 
 
 #mycursor.execute("select proid,id from fa_wanlshop_goods where id=391")
-# mycursor.execute("SELECT s.goods_id, k.proid FROM fa_wanlshop_goods as k LEFT JOIN fa_wanlshop_goods_spu as s on k.id = s.goods_id GROUP BY s.goods_id where s.goods_id in(1687.1688) HAVING count(s.goods_id) > 1")
-mycursor.execute("SELECT proid, id FROM fa_wanlshop_goods where id in(1687,1686,1688)")
+mycursor.execute("SELECT s.goods_id, k.proid FROM fa_wanlshop_goods as k LEFT JOIN fa_wanlshop_goods_spu as s on k.id = s.goods_id GROUP BY s.goods_id  HAVING count(s.goods_id) > 1")
+# mycursor.execute("SELECT proid, id FROM fa_wanlshop_goods where id in(1687)")
 
 fldata = mycursor.fetchall()
 ## 空列表
 for row in fldata:
-    proid=row[0]
+    proid=row[1]
     proid=proid.split(",")
     # proid=proid.split(",")
-    mycursor.execute('SELECT difference FROM fa_wanlshop_goods_sku where difference  like  \'%,%\' and goods_id='+str(row[1]));
+    mycursor.execute('SELECT difference FROM fa_wanlshop_goods_sku where difference  like  \'%,%\' and goods_id='+str(row[0]));
 
     fldata1 = mycursor.fetchall()
 
