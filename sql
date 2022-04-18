@@ -48,3 +48,22 @@ s.goods_id
 HAVING count(s.goods_id) >1
 
 update fa_wanlshop_goods set proid=(SELECT proid FROM fa_wanlshop_wholesale where fa_wanlshop_goods.wholesale_id= fa_wanlshop_wholesale.id)
+
+
+
+
+查询同价
+
+SELECT
+fa_wanlshop_shop.id,
+fa_wanlshop_shop.user_id,
+fa_wanlshop_shop.shopname,
+fa_wanlshop_goods.id,
+fa_wanlshop_goods.title,
+fa_wanlshop_goods_sku.price,
+fa_wanlshop_goods_sku.market_price,
+fa_wanlshop_goods_sku.wholesale_price
+FROM
+fa_wanlshop_shop
+INNER JOIN fa_wanlshop_goods ON fa_wanlshop_shop.id = fa_wanlshop_goods.shop_id
+INNER JOIN fa_wanlshop_goods_sku ON fa_wanlshop_goods.id = fa_wanlshop_goods_sku.goods_id  where fa_wanlshop_goods_sku.price=fa_wanlshop_goods_sku.wholesale_price
