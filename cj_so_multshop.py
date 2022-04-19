@@ -1,10 +1,12 @@
+# -*- coding: utf-8 -*-
+import io
+import sys
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='utf-8')
 import requests
 # from my_test import settings
-import sys
 import time
 import pymysql
-
-
+import threading
 
 config= {
 'host':'127.0.0.1',
@@ -22,13 +24,15 @@ config= {
 'cursorclass':pymysql.cursors.DictCursor,
 
 }
-STORE_PATH="D:/cjso2/"
+STORE_PATH="D:/cjso1/"
 
-class DownLoadPictures(object):
-    def __init__(self, sn):
-        self.headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
-                                      '(KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36',
-                        # 'Connection': 'close',
+# 继承父类threading.Thread
+class DownLoadPictures(threading.Thread):
+    def __init__(self, name, sn):
+        super().__init__()
+        self.name = name
+        self.headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36',
+
                         'Referer': 'https://image.so.com/z?ch=beauty'}
         self.url = 'https://image.so.com/zjl?ch=beauty&sn={}'.format(sn)
 
@@ -40,31 +44,33 @@ class DownLoadPictures(object):
         self.conn.close()
 
     def get_resp_data(self):
-        print('当前是链接为{}的图片下载！'.format(self.url))
+        # print('当前是链接为{}的图片下载！'.format(self.url))
+        print('当前是线程为{}的图片下载！'.format(self.name))
         # 返回的数据在json里
-        resp = requests.get(self.url, headers=self.headers)
-        return resp.json()
+        sql="SELECT fa_wanlshop_goods.id FROM fa_wanlshop_goods WHERE fa_wanlshop_goods.shop_id ="+self.name
+        row_list = self.cursor.fetchall(sql)
+        return row_list
 
-    def get_download_url(self):
+    def run(self):
+        # 重写run函数，线程在创建后会直接运行run函数
         resp_data = self.get_resp_data()
+        dd=1
         # 判断是否还有图片
-        if resp_data['end'] is False:
-            for elem in resp_data['list']:
-                downloadurl = elem['qhimg_downurl']
-                fromUrl = elem['purl']
-                title = elem['title']
-                self.download_picture(downloadurl, title, fromUrl)
-        else:
-            print('链接为{}已无图片'.format(self.url))
+        # if resp_data['end'] is False:
+        #     for elem in resp_data['list']:
+        #         downloadurl = elem['qhimg_downurl']
+        #         fromUrl = elem['purl']
+        #         title = elem['title']
+        #         # self.download_picture(downloadurl, title, fromUrl)
+        # else:
+        #     print('链接为{}已无图片'.format(self.url))
 
     def download_picture(self, downloadurl, title, fromUrl):
         sql = "select * from beautyImages where downloadUrl = '{}' and title='{}'".format(downloadurl, title)
         row_count = self.cursor.execute(sql)
         if not row_count:
             try:
-                requests.DEFAULT_RETRIES = 5  # 增加重试连接次数
-                s = requests.session()
-                s.keep_alive = False  # 关闭多余连接
+                # downloadurl="https://cf.shopee.sg/file/3ea865696f7ae06d87ff4e9c4c304c16?x-oss-process=image/auto-orient,1/interlace,1/format,jpg/quality,q_90/sharpen,50"
                 resp = requests.get(downloadurl, verify=False)
                 if resp.status_code == requests.codes.ok:
                     with open(STORE_PATH + '/' + title + '.jpg', 'wb') as f:
@@ -86,9 +92,18 @@ class DownLoadPictures(object):
 
 if __name__ == '__main__':
     start_time = time.time()
-    for i in range(0, 301, 30):
-        test = DownLoadPictures(sn=i)
-        test.get_download_url()
-    use_time = time.time() - start_time
-    print('单线程用时：{}秒'.format(use_time))
+    thread_list = []
+    conn = pymysql.Connect(**config)
+    cursor=conn.cursor()
+    cursor.execute("SELECT fa_wanlshop_goods.shop_id FROM fa_wanlshop_goods GROUP BY fa_wanlshop_goods.shop_id")
+    fldata = cursor.fetchall()
 
+    for i in range(0, len(fldata), 1):
+        test = DownLoadPictures(name=str(fldata[i]["shop_id"]), sn=fldata[i]["shop_id"])
+        thread_list.append(test)
+    for t in thread_list:
+        t.start()
+    for t in thread_list:
+        t.join()
+    use_time = time.time() - start_time
+    print('多线程用时：{}秒'.format(use_time))
