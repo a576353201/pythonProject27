@@ -1,6 +1,9 @@
+# -*- coding: utf-8 -*-
+import io
+import sys
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='utf-8')
 import requests
 # from my_test import settings
-import sys
 import time
 import pymysql
 import threading
@@ -14,22 +17,22 @@ config= {
 
 'password':'tE9MKDewI5hfA5gT',
 
-'db':'cjso',
+'db':'shop2',
 
 'charset':'utf8mb4',
 
 'cursorclass':pymysql.cursors.DictCursor,
 
 }
-STORE_PATH="D:/cjso/"
+STORE_PATH="D:/cjso1/"
 
 # 继承父类threading.Thread
 class DownLoadPictures(threading.Thread):
     def __init__(self, name, sn):
         super().__init__()
         self.name = name
-        self.headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
-                                      '(KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36',
+        self.headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36',
+
                         'Referer': 'https://image.so.com/z?ch=beauty'}
         self.url = 'https://image.so.com/zjl?ch=beauty&sn={}'.format(sn)
 
@@ -65,7 +68,8 @@ class DownLoadPictures(threading.Thread):
         row_count = self.cursor.execute(sql)
         if not row_count:
             try:
-                resp = requests.get(downloadurl, headers=self.headers)
+                # downloadurl="https://cf.shopee.sg/file/3ea865696f7ae06d87ff4e9c4c304c16?x-oss-process=image/auto-orient,1/interlace,1/format,jpg/quality,q_90/sharpen,50"
+                resp = requests.get(downloadurl, verify=False)
                 if resp.status_code == requests.codes.ok:
                     with open(STORE_PATH + '/' + title + '.jpg', 'wb') as f:
                         f.write(resp.content)

@@ -15,7 +15,7 @@ config= {
 
 'password':'tE9MKDewI5hfA5gT',
 
-'db':'cjso',
+'db':'shop2',
 
 'charset':'utf8mb4',
 
@@ -28,6 +28,7 @@ class DownLoadPictures(object):
     def __init__(self, sn):
         self.headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
                                       '(KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36',
+                        # 'Connection': 'close',
                         'Referer': 'https://image.so.com/z?ch=beauty'}
         self.url = 'https://image.so.com/zjl?ch=beauty&sn={}'.format(sn)
 
@@ -61,6 +62,9 @@ class DownLoadPictures(object):
         row_count = self.cursor.execute(sql)
         if not row_count:
             try:
+                requests.DEFAULT_RETRIES = 5  # 增加重试连接次数
+                s = requests.session()
+                s.keep_alive = False  # 关闭多余连接
                 resp = requests.get(downloadurl, headers=self.headers)
                 if resp.status_code == requests.codes.ok:
                     with open(STORE_PATH + '/' + title + '.jpg', 'wb') as f:
