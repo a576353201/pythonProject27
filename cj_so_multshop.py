@@ -24,7 +24,7 @@ config= {
 'cursorclass':pymysql.cursors.DictCursor,
 
 }
-STORE_PATH="D:/cjso1/"
+STORE_PATH="D:/file/"
 
 # 继承父类threading.Thread
 class DownLoadPictures(threading.Thread):
@@ -74,23 +74,35 @@ class DownLoadPictures(threading.Thread):
         if not row_count:
             try:
                 # downloadurl="https://cf.shopee.sg/file/3ea865696f7ae06d87ff4e9c4c304c16?x-oss-process=image/auto-orient,1/interlace,1/format,jpg/quality,q_90/sharpen,50"
+                images = images.split(',')
+                for img in images:
+                    resp = requests.get(img, verify=False)
+                    img = img.split('/')[-1]
+                    if resp.status_code == requests.codes.ok:
+                        with open(STORE_PATH + '/' + img + '.jpg', 'wb') as f:
+                            f.write(resp.content)
+
+
+
                 resp = requests.get(image, verify=False)
+                image=image.split('/')[-1]
                 if resp.status_code == requests.codes.ok:
                     with open(STORE_PATH + '/' + image + '.jpg', 'wb') as f:
-                        f.write(resp.content)
+                         f.write(resp.content)
+
                 print('下载完成')
                 # 插入数据库
-                insert_sql = "INSERT INTO beautyImages(title, downloadUrl, fromUrl, createTime) values (%s, %s, %s, %s)"
+                insert_sql = "INSERT INTO beautyImages(image,  createTime) values (%s, %s)"
                 try:
-                    self.cursor.execute(insert_sql, (title, downloadurl, fromUrl, time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())))
+                    self.cursor.execute(insert_sql, (image,  time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())))
                     self.conn.commit()
-                    print('插入标题为{}, 链接为{}成功!'.format(title, downloadurl))
+                    print('插入标题为{}, 链接为{}成功!')
                 except Exception:
-                    print('插入标题为{}, 链接为{}失败, 失败原因是{}'.format(title, downloadurl, sys.exc_info()[1]))
+                    print('插入标题为{}, 链接为{}失败, 失败原因是{}')
             except Exception:
-                print('标题为{}， 链接为{}下载失败,失败原因是{}'.format(title, downloadurl, sys.exc_info()[1]))
+                print('标题为{}， 链接为{}下载失败,失败原因是{}')
         else:
-            print('标题为{}， 链接为{}已存在'.format(title, downloadurl))
+            print('标题为{}， 链接为{}已存在')
 
 
 if __name__ == '__main__':
