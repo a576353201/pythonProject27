@@ -69,6 +69,7 @@ class DownLoadPictures(threading.Thread):
             print('链接为{}已无图片'.format(self.url))
 
     def download_picture(self, image, images, id):
+        image = image.split('/')[-1]
         sql = "select * from beautyImages where image = '{}'".format(image)
         row_count = self.cursor.execute(sql)
         if not row_count:
@@ -85,7 +86,7 @@ class DownLoadPictures(threading.Thread):
 
 
                 resp = requests.get(image, verify=False)
-                image=image.split('/')[-1]
+
                 if resp.status_code == requests.codes.ok:
                     with open(STORE_PATH + '/' + image + '.jpg', 'wb') as f:
                          f.write(resp.content)
