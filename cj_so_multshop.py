@@ -47,8 +47,10 @@ class DownLoadPictures(threading.Thread):
         # print('当前是链接为{}的图片下载！'.format(self.url))
         print('当前是线程为{}的图片下载！'.format(self.name))
         # 返回的数据在json里
-        sql="SELECT fa_wanlshop_goods.id FROM fa_wanlshop_goods WHERE fa_wanlshop_goods.shop_id ="+self.name
-        row_list = self.cursor.fetchall(sql)
+        sql="SELECT fa_wanlshop_goods.id FROM fa_wanlshop_goods WHERE fa_wanlshop_goods.shop_id ={}".format(self.name)
+        self.cursor.execute(sql)
+
+        row_list = self.cursor.fetchall()
         return row_list
 
     def run(self):
@@ -56,14 +58,14 @@ class DownLoadPictures(threading.Thread):
         resp_data = self.get_resp_data()
         dd=1
         # 判断是否还有图片
-        # if resp_data['end'] is False:
-        #     for elem in resp_data['list']:
-        #         downloadurl = elem['qhimg_downurl']
-        #         fromUrl = elem['purl']
-        #         title = elem['title']
-        #         # self.download_picture(downloadurl, title, fromUrl)
-        # else:
-        #     print('链接为{}已无图片'.format(self.url))
+        if len(resp_data)>0:
+            for elem in resp_data:
+                downloadurl = elem['qhimg_downurl']
+                fromUrl = elem['purl']
+                title = elem['title']
+                # self.download_picture(downloadurl, title, fromUrl)
+        else:
+            print('链接为{}已无图片'.format(self.url))
 
     def download_picture(self, downloadurl, title, fromUrl):
         sql = "select * from beautyImages where downloadUrl = '{}' and title='{}'".format(downloadurl, title)
