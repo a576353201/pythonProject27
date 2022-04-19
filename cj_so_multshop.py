@@ -47,7 +47,7 @@ class DownLoadPictures(threading.Thread):
         # print('当前是链接为{}的图片下载！'.format(self.url))
         print('当前是线程为{}的图片下载！'.format(self.name))
         # 返回的数据在json里
-        sql="SELECT fa_wanlshop_goods.id FROM fa_wanlshop_goods WHERE fa_wanlshop_goods.shop_id ={}".format(self.name)
+        sql="SELECT fa_wanlshop_goods.id,image,images FROM fa_wanlshop_goods WHERE fa_wanlshop_goods.shop_id ={}".format(self.name)
         self.cursor.execute(sql)
 
         row_list = self.cursor.fetchall()
@@ -60,22 +60,23 @@ class DownLoadPictures(threading.Thread):
         # 判断是否还有图片
         if len(resp_data)>0:
             for elem in resp_data:
-                downloadurl = elem['qhimg_downurl']
-                fromUrl = elem['purl']
-                title = elem['title']
-                # self.download_picture(downloadurl, title, fromUrl)
+                image = elem['image']
+                images = elem['images']
+                # fromUrl = elem['purl']
+                # title = elem['title']
+                self.download_picture(image, images, id)
         else:
             print('链接为{}已无图片'.format(self.url))
 
-    def download_picture(self, downloadurl, title, fromUrl):
-        sql = "select * from beautyImages where downloadUrl = '{}' and title='{}'".format(downloadurl, title)
+    def download_picture(self, image, images, id):
+        sql = "select * from beautyImages where image = '{}'".format(image)
         row_count = self.cursor.execute(sql)
         if not row_count:
             try:
                 # downloadurl="https://cf.shopee.sg/file/3ea865696f7ae06d87ff4e9c4c304c16?x-oss-process=image/auto-orient,1/interlace,1/format,jpg/quality,q_90/sharpen,50"
-                resp = requests.get(downloadurl, verify=False)
+                resp = requests.get(image, verify=False)
                 if resp.status_code == requests.codes.ok:
-                    with open(STORE_PATH + '/' + title + '.jpg', 'wb') as f:
+                    with open(STORE_PATH + '/' + image + '.jpg', 'wb') as f:
                         f.write(resp.content)
                 print('下载完成')
                 # 插入数据库
