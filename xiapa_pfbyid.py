@@ -118,7 +118,7 @@ path = 'pm.csv'
 
 
 #mycursor.execute("select proid,id from fa_wanlshop_goods where id=391")
-mycursor.execute("select id,proid from fa_wanlshop_goods where id=%s order by id asc" % (str(id)))
+mycursor.execute("select id,proid,wholesale_id from fa_wanlshop_goods where id=%s order by id asc" % (str(id)))
 # mycursor.execute("SELECT proid, id FROM fa_wanlshop_goods where id in(1687)")
 
 fldata = mycursor.fetchall()
@@ -177,6 +177,65 @@ for row in fldata:
             # market_price = str(market_price)[:-5]
             sn = 11
             sql = "INSERT INTO fa_wanlshop_goods_sku (difference, price,market_price,wholesale_price,stock,goods_id,weigh,sn) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
+            val = (difference, price, market_price, price, stock, row[1], 1, sn)
+            mycursor.execute(sql, val)
+            skuid = mycursor.lastrowid
+            # mydb.commit()
+        # a2 = html['items'][i]['item_basic']['name']
+
+        # adr = ("Yellow Garden 2",)
+        # ts = time.time()
+        # sql = "update fa_wanlshop_goods set updatetime=%s where id=%s"
+        # id = (ts, row[1])
+        # mycursor.execute(sql, id)
+        # spuid = mycursor.lastrowid
+        # # mydb.commit()
+
+    except Exception as e:
+    # cursor.close()  # 先关游标
+       mydb.rollback()
+       print(e)
+    finally:
+        if (spuname.strip() == ''):
+            mydb.rollback()
+        if (difference.strip() == ''):
+            mydb.rollback()
+        mydb.commit()
+
+    try:
+        sql = 'delete from fa_wanlshop_wholesale_spu where id=%s'
+        id = (row[2],)
+
+        mycursor.execute(sql, id)
+        # mydb.commit()
+        sql = 'delete from fa_wanlshop_wholesale_sku where id=%s'
+        id1 = (row[2],)
+
+        mycursor.execute(sql, id1)
+        # mydb.commit()
+        spu = pitem['tier_variations']
+        models = pitem['models']
+        for k in range(len(spu)):
+            spuname = spu[k]['name']
+            item = ",".join(spu[k]['options'])
+            sql = "INSERT INTO fa_wanlshop_wholesale_spu (name, item,goods_id) VALUES (%s, %s, %s)"
+            val = (spuname, item, row[1])
+            mycursor.execute(sql, val)
+            spuid = mycursor.lastrowid
+
+        for k in range(len(models)):
+            # spuname=spu[k]['name']
+            difference = models[k]['name']
+            price = models[k]['price']
+            if (len(str(price)) == 0):
+                continue
+            market_price = models[k]['price']
+            stock = models[k]['stock']
+            price = price * 0.00001 * 0.73
+            market_price = market_price * 0.00001 * 0.73
+            # market_price = str(market_price)[:-5]
+            sn = 11
+            sql = "INSERT INTO fa_wanlshop_wholesale_sku (difference, price,market_price,wholesale_price,stock,goods_id,weigh,sn) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
             val = (difference, price, market_price, price, stock, row[1], 1, sn)
             mycursor.execute(sql, val)
             skuid = mycursor.lastrowid
