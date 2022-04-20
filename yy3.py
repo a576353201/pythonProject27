@@ -11,7 +11,14 @@ def repl_func(matched):
     if matched:
         kk += 1
         text = matched.group(0)
-        return "$"+kk+"$"+str(text)+"$"+kk+"$"
+        return "$"+str(kk)+"$"+str(text)+"$"+str(kk)+"$"
+def repl_func1(matched):
+    global kk
+
+    if matched:
+        kk += 1
+        text = matched.group(0)
+        return "$"+str(kk)+"$"+str(text)+"$"+str(kk)+"$"
 def printPath(level, path):
     global kk
     global allFileNum
@@ -71,15 +78,31 @@ def printPath(level, path):
             # ])
 
         fy=translator.translate('我是中国人.', dest='en').text
-        for result1 in result:
-            fy = translator.translate(result1, dest='en').text
+        dic = {}
+        dic1 = {}
+        fylist=[]
+        for index in range(len(result)):
+            fyres = translator.translate(result[index], dest='en').text
+            dic.setdefault("$"+str(index)+"$"+str(result[index])+"$"+str(index)+"$",[]).append(fyres)
+            dic1[index] = fyres
+            fylist.append(fyres)
+
+            # fy[index]['from']=result[index]
+            # fy[index]['to']=fyres
             dd=2
+
 
         #
 
+        for di in dic.items():
+            thstr = re.sub('$+str(index)+"$.*?$"+str(index)+"$"', fylist[index], thstr)
 
 
+
+        thstr1 = re.sub('[\u4e00-\u9fa5]+', repl_func, thstr)
         string2 = transform2_zh_hant(a)
+
+
         with open(path+ '/' +fl, "w+",encoding='utf-8',errors='ignore') as fw:
             d=2
             # fw.write(string2)
@@ -100,7 +123,7 @@ def transform2_zh_hans(string):
 if __name__ == '__main__':
     string = "pen45导火www线hello"
     if __name__ == '__main__':
-        printPath(1, 'G:/ac8')
+        printPath(1, 'G:/ac6/components/ValidCode')
         print ('总文件数 =', allFileNum)
 
         # with open("H:/ShadowsocksR/chat.vue",encoding = "utf-8") as f:
