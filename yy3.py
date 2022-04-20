@@ -83,7 +83,7 @@ def printPath(level, path):
         fylist=[]
         for index in range(len(result)):
             fyres = translator.translate(result[index], dest='en').text
-            dic.setdefault("$"+str(index)+"$"+str(result[index])+"$"+str(index)+"$",[]).append(fyres)
+            dic.setdefault("$"+str(index+1)+"$"+str(result[index])+"$"+str(index+1)+"$",[]).append(fyres)
             dic1[index] = fyres
             fylist.append(fyres)
 
@@ -95,17 +95,17 @@ def printPath(level, path):
         #
 
         for di in dic.items():
-            thstr = re.sub('$+str(index)+"$.*?$"+str(index)+"$"', fylist[index], thstr)
+            thstr=thstr.replace(di[0],di[1][0],1)
 
 
 
-        thstr1 = re.sub('[\u4e00-\u9fa5]+', repl_func, thstr)
-        string2 = transform2_zh_hant(a)
+        # thstr1 = re.sub('[\u4e00-\u9fa5]+', repl_func, thstr)
+        # string2 = transform2_zh_hant(a)
 
 
         with open(path+ '/' +fl, "w+",encoding='utf-8',errors='ignore') as fw:
             d=2
-            # fw.write(string2)
+            fw.write(thstr)
         # 随便计算一下有多少个文件
         allFileNum = allFileNum + 1
 
