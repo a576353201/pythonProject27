@@ -123,7 +123,7 @@ def transform2_zh_hans(string):
 if __name__ == '__main__':
     string = "pen45导火www线hello"
     if __name__ == '__main__':
-        printPath(1, 'G:/ac6/components/ValidCode')
+        printPath(1, 'G:/ac6')
         print ('总文件数 =', allFileNum)
 
         # with open("H:/ShadowsocksR/chat.vue",encoding = "utf-8") as f:
