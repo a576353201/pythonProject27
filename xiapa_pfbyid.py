@@ -8,6 +8,9 @@ import time
 import sys
 from babel.numbers import format_currency
 import re
+import os
+import logging
+logging.basicConfig(filename=os.path.join(os.getcwd(),'log.txt'),level=logging.DEBUG)
 
 
 # https://shopee.tw/api/v2/item/get_ratings?flag=1&itemid=4058929120&limit=3&offset=0&shopid=322104456
@@ -118,13 +121,13 @@ path = 'pm.csv'
 
 
 #mycursor.execute("select proid,id from fa_wanlshop_goods where id=391")
-mycursor.execute("select id,proid,wholesale_id from fa_wanlshop_goods where id=%s order by id asc" % (str(id)))
+mycursor.execute("select proid,id,wholesale_id from fa_wanlshop_goods where id=%s order by id asc" % (str(id)))
 # mycursor.execute("SELECT proid, id FROM fa_wanlshop_goods where id in(1687)")
 
 fldata = mycursor.fetchall()
 ## 空列表
 for row in fldata:
-    proid=row[1]
+    proid=row[0]
     proid=proid.split(",")
     # proid=proid.split(",")
     # mycursor.execute('SELECT difference FROM fa_wanlshop_goods_sku where difference  like  \'%,%\' and goods_id='+str(row[0]));
@@ -138,6 +141,7 @@ for row in fldata:
     purl = 'https://shopee.sg/api/v4/item/get?itemid=%s&shopid=%s' % (
         str(proid[0]), str(proid[1]));
     preq = gethtml(purl, hea)
+    logging.info(purl)
     pjson = preq.json()
     pitem = pjson['data']
     if pitem is None:
