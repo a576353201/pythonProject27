@@ -3,6 +3,7 @@ import re
 import zhconv
 import os
 from googletrans import Translator
+# googletrans==4.0.0-rc1
 allFileNum = 0
 kk = 0
 def repl_func(matched):
@@ -56,7 +57,7 @@ def printPath(level, path):
             printPath((int(dirList[0]) + 1), path + '/' + dl)
     for fl in fileList:
         ext=os.path.splitext(fl)[-1]
-        if(ext!='.vue'):
+        if(ext!='.json'):
             continue
         # if(ext=='.js'):
         #     continue
@@ -78,6 +79,7 @@ def printPath(level, path):
             # ])
 
         fy=translator.translate('我是中国人.', dest='en').text
+
         dic = {}
         dic1 = {}
         fylist=[]
