@@ -118,7 +118,7 @@ path = 'pm.csv'
 
 
 #mycursor.execute("select proid,id from fa_wanlshop_goods where id=391")
-mycursor.execute("select proid,id from fa_wanlshop_goods where shop_id=34 and updatetime is null order by id asc")
+mycursor.execute("select proid,id from fa_wanlshop_goods where id=34 order by id asc")
 
 fldata = mycursor.fetchall()
 ## 空列表

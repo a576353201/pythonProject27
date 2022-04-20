@@ -57,7 +57,7 @@ def printPath(level, path):
             printPath((int(dirList[0]) + 1), path + '/' + dl)
     for fl in fileList:
         ext=os.path.splitext(fl)[-1]
-        if(ext!='.json'):
+        if(ext!='.js'):
             continue
         # if(ext=='.js'):
         #     continue
