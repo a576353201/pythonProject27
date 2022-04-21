@@ -121,7 +121,7 @@ path = 'pm.csv'
 
 
 #mycursor.execute("select proid,id from fa_wanlshop_goods where id=391")
-mycursor.execute("select proid,id,wholesale_id from fa_wanlshop_goods where id=%s order by id asc" % (str(id)))
+mycursor.execute("select proid,id,wholesale_id,shop_id from fa_wanlshop_goods where id=%s order by id asc" % (str(id)))
 # mycursor.execute("SELECT proid, id FROM fa_wanlshop_goods where id in(1687)")
 
 fldata = mycursor.fetchall()
@@ -171,13 +171,17 @@ for row in fldata:
         for k in range(len(models)):
             # spuname=spu[k]['name']
             difference = models[k]['name']
+            sql = 'select dpspjjb from fa_wanlshop_shop where id=%s' % (row[3]);
+            mycursor.execute(sql)
+            dpspjjb = mycursor.fetchone()
+            dpspjjb=dpspjjb[0]
             price = models[k]['price']
             if (len(str(price)) == 0):
                 continue
             market_price = models[k]['price']
             stock = models[k]['stock']
-            price = price * 0.00001 * 0.73
             market_price = market_price * 0.00001 * 0.73
+            price = market_price+market_price*(dpspjjb*0.01)
             # market_price = str(market_price)[:-5]
             sn = 11
             sql = "INSERT INTO fa_wanlshop_goods_sku (difference, price,market_price,wholesale_price,stock,goods_id,weigh,sn) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
