@@ -12,12 +12,14 @@ import os
 import logging
 from dkej import cartesian
 logging.basicConfig(filename=os.path.join(os.getcwd(),'log.txt'),level=logging.DEBUG)
-
-car = cartesian()
-car.add_data([1, 2, 3, 4])
-car.add_data([5, 6, 7, 8])
-car.add_data([9, 10, 11, 12])
-tt=car.build()
+# str='1,50,9'
+# car = cartesian()
+# car.add_data([1, 2, 3, 4])
+# car.add_data([5, 6, 7, 8])
+# car.add_data([9, 10, 11, 12])
+# tt=car.build()
+# if(str in tt):
+#     dd=1
 
 
 
@@ -168,18 +170,30 @@ for row in fldata:
         # mydb.commit()
         spu = pitem['tier_variations']
         models = pitem['models']
+        spulist=[]
+        car = cartesian()
         for k in range(len(spu)):
             spuname = spu[k]['name']
             item = ",".join(spu[k]['options'])
+            # spulist.append(item)
+
+            car.add_data(spu[k]['options'])
+
+            # tt = car.build()
+            # if(str in tt):
+            #     dd=1
 
             sql = "INSERT INTO fa_wanlshop_goods_spu (name, item,goods_id) VALUES (%s, %s, %s)"
             val = (spuname, item, row[1])
             mycursor.execute(sql, val)
             spuid = mycursor.lastrowid
 
+        tt = car.build()
         for k in range(len(models)):
             # spuname=spu[k]['name']
             difference = models[k]['name']
+            if(difference not in tt):
+                continue
             sql = 'select dpspjjb from fa_wanlshop_shop where id=%s' % (row[3]);
             mycursor.execute(sql)
             dpspjjb = mycursor.fetchone()

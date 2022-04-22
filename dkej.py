@@ -13,13 +13,15 @@ class cartesian(object):
 
     def build(self):  # 计算笛卡尔积
         for item in itertools.product(*self._data_list):
-            # item=list(item)
+            item=list(item)
             x = []
             for items in item:
-                x.extend(str(items))
+                x.append(str(items))
 
             self._data_lists.append(",".join(x))
             print(item)
+
+        return self._data_lists
 
 
 if __name__ == "__main__":
