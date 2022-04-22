@@ -10,7 +10,15 @@ from babel.numbers import format_currency
 import re
 import os
 import logging
+from dkej import cartesian
 logging.basicConfig(filename=os.path.join(os.getcwd(),'log.txt'),level=logging.DEBUG)
+
+car = cartesian()
+car.add_data([1, 2, 3, 4])
+car.add_data([5, 6, 7, 8])
+car.add_data([9, 10, 11, 12])
+tt=car.build()
+
 
 
 # https://shopee.tw/api/v2/item/get_ratings?flag=1&itemid=4058929120&limit=3&offset=0&shopid=322104456
@@ -163,6 +171,7 @@ for row in fldata:
         for k in range(len(spu)):
             spuname = spu[k]['name']
             item = ",".join(spu[k]['options'])
+
             sql = "INSERT INTO fa_wanlshop_goods_spu (name, item,goods_id) VALUES (%s, %s, %s)"
             val = (spuname, item, row[1])
             mycursor.execute(sql, val)
@@ -180,12 +189,18 @@ for row in fldata:
                 continue
             market_price = models[k]['price']
             stock = models[k]['stock']
+
+            stock=9999
             market_price = market_price * 0.00001 * 0.73
-            price = market_price+market_price*(dpspjjb*0.01)
+            price = (models[k]['price']* 0.00001 * 0.73)+(models[k]['price']* 0.00001 * 0.73)*(dpspjjb*0.01)
+            if(k==0):
+                sql = 'update  fa_wanlshop_goods set price=%s where id=%s' % (price,row[1]);
+                mycursor.execute(sql)
+
             # market_price = str(market_price)[:-5]
             sn = 11
             sql = "INSERT INTO fa_wanlshop_goods_sku (difference, price,market_price,wholesale_price,stock,goods_id,weigh,sn) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
-            val = (difference, price, market_price, price, stock, row[1], 1, sn)
+            val = (difference, price, market_price, market_price, stock, row[1], 1, sn)
             mycursor.execute(sql, val)
             skuid = mycursor.lastrowid
             # mydb.commit()
