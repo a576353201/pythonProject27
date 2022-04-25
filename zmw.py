@@ -90,8 +90,10 @@ def login(secret, account):
 
         type_link0 = html.xpath('//*[@id="ceotheme"]/div[1]/section[3]/div[1]/div[1]/div/div[2]/div/a')  # 排除上级
         type_link1 = html.xpath('/html/body/div[1]/section[3]/div[1]/div[1]/div/div[2]/div/a')  # 排除上级
+        href = html.xpath('/html/body/div[1]/section[3]/div[1]/div[1]/div/div[2]/div/a/@href')  # 排除上级
         span = html.cssselect('.card-title-desc> a')
         textlist = soup.select('.card-title-desc> a')
+        imgpic = html.xpath('//*[@id="ceotheme"]/div[1]/section[3]/div[1]/div[1]/div/div[1]/a/img')
         textlist1 = html.select('#ceotheme > div.ceo-background-muted.site.ceo-zz-background > section.ceo-container > div.ceo-grid-medium.ceo-grid > div:nth-child(1) > div > div.ceo-padding-remove > div > a')
 
         # soup = BeautifulSoup(login_code, 'html.parser')
