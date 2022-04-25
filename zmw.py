@@ -1,8 +1,14 @@
 import os
 # from Tkinter import Image
+import time
 import requests
+import cssselect
+from bs4 import BeautifulSoup
+
+
 import http.cookiejar as cookielib
 from bs4 import BeautifulSoup
+from lxml import etree
 
 session = requests.session()
 session.cookies = cookielib.LWPCookieJar(filename='cookies')
@@ -10,6 +16,23 @@ try:
     session.cookies.load(ignore_discard=True)
 except:
     print("Cookie 未能加载")
+def gethtml(url0,head):
+    i = 0
+    while i < 5:
+        try:
+            html = requests.get(url = url0, headers = head,timeout = (10, 20))
+            repeat = 0
+            while (html.status_code != 200):  # 错误响应码重试
+                print('error: ', html.status_code)
+                time.sleep(20 + repeat * 5)
+                if (repeat < 5):
+                    repeat += 1
+                html = requests.get(url = url0, headers = head,timeout = (10, 20))
+            return html
+        except requests.exceptions.RequestException:
+            print('超时重试次数: ', i + 1)
+            time.sleep(1)
+            i += 1
 
 
 def get_captcha():
@@ -57,12 +80,23 @@ def login(secret, account):
         # postdata["zy_security_code"] = get_captcha()
 
         # 不需要验证码直接登录成功
-        login_page = session.post(post_url, data=postdata, headers=headers)
-        login_code = login_page.text
+        # login_page = session.post(post_url, data=postdata, headers=headers)
+        # login_code = login_page.text
+        url="https://www.zzmzz.net/yuanma"
+        req = gethtml(url, headers)
+        html = etree.HTML(req.text)
+        req.encoding = 'utf-8'
+        soup = BeautifulSoup(req.text, 'html.parser')  # 对返回的结果进行解析
 
-        soup = BeautifulSoup(login_code, 'html.parser')
-        login_error = soup.find("div", {'id': 'login_error'}).text
-        print(login_error)
+        type_link0 = html.xpath('//*[@id="ceotheme"]/div[1]/section[3]/div[1]/div[1]/div/div[2]/div/a')  # 排除上级
+        type_link1 = html.xpath('/html/body/div[1]/section[3]/div[1]/div[1]/div/div[2]/div/a')  # 排除上级
+        span = html.cssselect('.card-title-desc> a')
+        textlist = soup.select('.card-title-desc> a')
+        textlist1 = html.select('#ceotheme > div.ceo-background-muted.site.ceo-zz-background > section.ceo-container > div.ceo-grid-medium.ceo-grid > div:nth-child(1) > div > div.ceo-padding-remove > div > a')
+
+        # soup = BeautifulSoup(login_code, 'html.parser')
+        # login_error = soup.find("div", {'id': 'login_error'}).text
+        # print(login_error)
         # print(login_code)
     except:
         pass
