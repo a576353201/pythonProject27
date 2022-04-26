@@ -91,6 +91,13 @@ def login(secret, account):
         type_link0 = html.xpath('//*[@id="ceotheme"]/div[1]/section[3]/div[1]/div[1]/div/div[2]/div/a')  # 排除上级
         type_link1 = html.xpath('/html/body/div[1]/section[3]/div[1]/div[1]/div/div[2]/div/a')  # 排除上级
         href = html.xpath('/html/body/div[1]/section[3]/div[1]/div[1]/div/div[2]/div/a/@href')  # 排除上级
+        zreq = gethtml(href[0], headers)
+        zhtml = etree.HTML(zreq.text)
+        zsoup = BeautifulSoup(zreq.text, 'html.parser')  # 对返回的结果进行解析
+
+        zhtml_text = zsoup.select_one('.single-content')  # 排除上级
+
+
         span = html.cssselect('.card-title-desc> a')
         textlist = soup.select('.card-title-desc> a')
         imgpic = html.xpath('//*[@id="ceotheme"]/div[1]/section[3]/div[1]/div[1]/div/div[1]/a/img')
