@@ -77,11 +77,14 @@ def login(secret, account):
 
     }
     try:
+
+        dd=1
         # postdata["zy_security_code"] = get_captcha()
 
         # 不需要验证码直接登录成功
-        # login_page = session.post(post_url, data=postdata, headers=headers)
-        # login_code = login_page.text
+        login_page = session.post(post_url, data=postdata, headers=headers)
+        response = gethtml('https://www.zzmzz.net/wp-content/themes/ceomax/ceoshop/erphpdown/download.php?postid=55195&iframe=1', headers)
+        login_code = login_page.text
         url="https://www.zzmzz.net/yuanma"
         req = gethtml(url, headers)
         html = etree.HTML(req.text)
@@ -94,6 +97,8 @@ def login(secret, account):
         zreq = gethtml(href[0], headers)
         zhtml = etree.HTML(zreq.text)
         zsoup = BeautifulSoup(zreq.text, 'html.parser')  # 对返回的结果进行解析
+
+
 
         zhtml_text = zsoup.select_one('.single-content')  # 排除上级
 
