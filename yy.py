@@ -36,11 +36,14 @@ def printPath(level, path):
             # 打印目录下的所有文件夹和文件，目录级别+1
             printPath((int(dirList[0]) + 1), path + '/' + dl)
     for fl in fileList:
+        ext = os.path.splitext(fl)[-1]
+        if (ext != '.js' and ext != '.vue' and ext != '.json'):
+            continue
         # 打印文件
         print ('-s2' * (int(dirList[0])), fl)
         with open(path+ '/' +fl,encoding = "utf-8",errors='ignore') as f:
             a = f.read()
-        string2 = transform2_zh_hant(a)
+        string2 = transform2_zh_hans(a)
         with open(path+ '/' +fl, "w+",encoding='utf-8',errors='ignore') as fw:
             fw.write(string2)
         # 随便计算一下有多少个文件
@@ -60,7 +63,7 @@ def transform2_zh_hans(string):
 if __name__ == '__main__':
     string = "pen45导火www线hello"
     if __name__ == '__main__':
-        printPath(1, 'G:/ac8')
+        printPath(1, 'E:/view_ZAZfnM/ac8719')
         print ('总文件数 =', allFileNum)
 
         # with open("H:/ShadowsocksR/chat.vue",encoding = "utf-8") as f:

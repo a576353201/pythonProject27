@@ -57,7 +57,10 @@ def printPath(level, path):
             printPath((int(dirList[0]) + 1), path + '/' + dl)
     for fl in fileList:
         ext=os.path.splitext(fl)[-1]
-        if(ext!='.js'):
+
+        if(fl!='detail.html'):
+            continue
+        if(ext!='.html'):
             continue
         # if(ext=='.js'):
         #     continue
@@ -65,12 +68,12 @@ def printPath(level, path):
         print ('-s2' * (int(dirList[0])), fl)
         with open(path+ '/' +fl,encoding = "utf-8",errors='ignore') as f:
             a = f.read()
-            result = re.findall('[\u4e00-\u9fa5]+', a)
+            result = re.findall("[\u4e00-\u9fa5]+", a)
             if len(result)==0:
                 continue
 
 
-            thstr=re.sub('[\u4e00-\u9fa5]+', repl_func, a)
+            thstr=re.sub("[\u4e00-\u9fa5]+", repl_func, a)
             kk=0
             translator = Translator()
             # translator = Translator(service_urls=[
@@ -78,13 +81,13 @@ def printPath(level, path):
             #     'translate.google.co.kr',
             # ])
 
-        fy=translator.translate('我是中国人.', dest='en').text
+        # fy=translator.translate('我是中国人.', dest='es').text
 
         dic = {}
         dic1 = {}
         fylist=[]
         for index in range(len(result)):
-            fyres = translator.translate(result[index], dest='en').text
+            fyres = translator.translate(result[index], dest='es').text
             dic.setdefault("$"+str(index+1)+"$"+str(result[index])+"$"+str(index+1)+"$",[]).append(fyres)
             dic1[index] = fyres
             fylist.append(fyres)
@@ -125,7 +128,7 @@ def transform2_zh_hans(string):
 if __name__ == '__main__':
     string = "pen45导火www线hello"
     if __name__ == '__main__':
-        printPath(1, 'G:/ac8/tcc')
+        printPath(1, 'G:/jz/www.t.com/application/index/view/wanlshop/order/')
         print ('总文件数 =', allFileNum)
 
         # with open("H:/ShadowsocksR/chat.vue",encoding = "utf-8") as f:
