@@ -98,10 +98,10 @@ def printPath(level, path):
 
 
         #
-        phpstr=''
+
         for di in dic.items():
             thstr=thstr.replace(di[0],	"{:__('"+di[1][0][1]+"')}",1)
-            phpstr+=" 'Log in' = > '登錄',"
+            # 'Log in' = > '登錄',
 
 
 
