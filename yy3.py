@@ -58,7 +58,7 @@ def printPath(level, path):
     for fl in fileList:
         ext=os.path.splitext(fl)[-1]
 
-        if(fl!='test.html'):
+        if(fl!='invitation.html'):
             continue
         if(ext!='.html'):
             continue
@@ -100,18 +100,21 @@ def printPath(level, path):
         #
         phpstr=''
         for di in dic.items():
-            thstr=thstr.replace(di[0],	"{:__('"+di[1][0][1]+"')}",1)
-            phpstr+=" 'Log in' = > '登錄',"
+            thstr=thstr.replace(di[0],	'{:__("'+di[1][0][1]+'")}',1)
+            phpstr+=" '"+di[1][0][1]+"' = > '"+di[1][0][0]+"',\n"
 
 
 
         # thstr1 = re.sub('[\u4e00-\u9fa5]+', repl_func, thstr)
         # string2 = transform2_zh_hant(a)
+        with open(path+ '/test.php', "w+",encoding='utf-8',errors='ignore') as fw:
+            d=2
+            fw.write(phpstr)
 
 
         with open(path+ '/' +fl, "w+",encoding='utf-8',errors='ignore') as fw:
             d=2
-            # fw.write(thstr)
+            fw.write(thstr)
         # 随便计算一下有多少个文件
         allFileNum = allFileNum + 1
 
@@ -129,7 +132,8 @@ def transform2_zh_hans(string):
 if __name__ == '__main__':
     string = "pen45导火www线hello"
     if __name__ == '__main__':
-        printPath(1, 'G:/jz/www.t.com/application/index/view/wanlshop/order/')
+        # printPath(1, 'G:/jz/www.t.com/application/index/view/wanlshop/order/')
+        printPath(1, 'G:/jz/www.t.com/application/index/view/wanlshop/shop/')
         print ('总文件数 =', allFileNum)
 
         # with open("H:/ShadowsocksR/chat.vue",encoding = "utf-8") as f:

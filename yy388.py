@@ -57,10 +57,7 @@ def printPath(level, path):
             printPath((int(dirList[0]) + 1), path + '/' + dl)
     for fl in fileList:
         ext=os.path.splitext(fl)[-1]
-
-        if(fl!='test.html'):
-            continue
-        if(ext!='.html'):
+        if(ext!='.js'):
             continue
         # if(ext=='.js'):
         #     continue
@@ -68,12 +65,12 @@ def printPath(level, path):
         print ('-s2' * (int(dirList[0])), fl)
         with open(path+ '/' +fl,encoding = "utf-8",errors='ignore') as f:
             a = f.read()
-            result = re.findall("[\u4e00-\u9fa5]+", a)
+            result = re.findall('[\u4e00-\u9fa5]+', a)
             if len(result)==0:
                 continue
 
 
-            thstr=re.sub("[\u4e00-\u9fa5]+", repl_func, a)
+            thstr=re.sub('[\u4e00-\u9fa5]+', repl_func, a)
             kk=0
             translator = Translator()
             # translator = Translator(service_urls=[
@@ -81,14 +78,14 @@ def printPath(level, path):
             #     'translate.google.co.kr',
             # ])
 
-        # fy=translator.translate('我是中国人.', dest='es').text
+        fy=translator.translate('我是中国人.', dest='en').text
 
         dic = {}
         dic1 = {}
         fylist=[]
         for index in range(len(result)):
             fyres = translator.translate(result[index], dest='en').text
-            dic.setdefault("$"+str(index+1)+"$"+str(result[index])+"$"+str(index+1)+"$",[]).append([str(result[index]),fyres])
+            dic.setdefault("$"+str(index+1)+"$"+str(result[index])+"$"+str(index+1)+"$",[]).append(fyres)
             dic1[index] = fyres
             fylist.append(fyres)
 
@@ -100,8 +97,7 @@ def printPath(level, path):
         #
 
         for di in dic.items():
-            thstr=thstr.replace(di[0],	"{:__('"+di[1][0][1]+"')}",1)
-            # 'Log in' = > '登錄',
+            thstr=thstr.replace(di[0],di[1][0],1)
 
 
 
@@ -111,7 +107,7 @@ def printPath(level, path):
 
         with open(path+ '/' +fl, "w+",encoding='utf-8',errors='ignore') as fw:
             d=2
-            # fw.write(thstr)
+            fw.write(thstr)
         # 随便计算一下有多少个文件
         allFileNum = allFileNum + 1
 
@@ -129,7 +125,7 @@ def transform2_zh_hans(string):
 if __name__ == '__main__':
     string = "pen45导火www线hello"
     if __name__ == '__main__':
-        printPath(1, 'G:/jz/www.t.com/application/index/view/wanlshop/order/')
+        printPath(1, 'G:/ac8/tcc')
         print ('总文件数 =', allFileNum)
 
         # with open("H:/ShadowsocksR/chat.vue",encoding = "utf-8") as f:
