@@ -3,6 +3,7 @@ import re
 import zhconv
 import os
 from googletrans import Translator
+import mysql.connector
 # googletrans==4.0.0-rc1
 allFileNum = 0
 kk = 0
@@ -57,9 +58,9 @@ def printPath(level, path):
             printPath((int(dirList[0]) + 1), path + '/' + dl)
     for fl in fileList:
         ext=os.path.splitext(fl)[-1]
-        if(fl!='tr.js'):
-            continue
-        if(ext!='.js'):
+        # if(fl!='tr.php'):
+        #     continue
+        if(ext!='.php'):
             continue
         # if(ext=='.js'):
         #     continue
@@ -85,11 +86,25 @@ def printPath(level, path):
         dic = {}
         dic1 = {}
         fylist=[]
-        for index in range(len(result)):
-            fyres = translator.translate(result[index], dest='tr').text
-            dic.setdefault("$"+str(index+1)+"$"+str(result[index])+"$"+str(index+1)+"$",[]).append(fyres)
-            dic1[index] = fyres
-            fylist.append(fyres)
+        mydb = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            passwd="tE9MKDewI5hfA5gT",
+            # database="shopry"
+            database="shop2"
+
+        )
+        mycursor = mydb.cursor()
+        mycursor.execute("select name,id from fa_wanlshop_category where type='goods' order by id asc")
+
+        fldata = mycursor.fetchall()
+        for row in fldata:
+        # for index in range(len(result)):
+            fyres = translator.translate(row[0], dest='id').text
+            # dic.setdefault("$"+str(index+1)+"$"+str(result[index])+"$"+str(index+1)+"$",[]).append(fyres)
+            # dic1[index] = fyres
+            sql = 'update  fa_wanlshop_category set idname=%s where id=%s' % (fyres, row[1]);
+            mycursor.execute(sql)
 
             # fy[index]['from']=result[index]
             # fy[index]['to']=fyres
@@ -98,8 +113,8 @@ def printPath(level, path):
 
         #
 
-        for di in dic.items():
-            thstr=thstr.replace(di[0],di[1][0],1)
+        # for di in dic.items():
+        #     thstr=thstr.replace(di[0],di[1][0],1)
 
 
 
@@ -107,9 +122,9 @@ def printPath(level, path):
         # string2 = transform2_zh_hant(a)
 
 
-        with open(path+ '/' +fl, "w+",encoding='utf-8',errors='ignore') as fw:
-            d=2
-            fw.write(thstr)
+        # with open(path+ '/' +fl, "w+",encoding='utf-8',errors='ignore') as fw:
+        #     d=2
+        #     fw.write(thstr)
         # 随便计算一下有多少个文件
         allFileNum = allFileNum + 1
 
@@ -127,8 +142,8 @@ def transform2_zh_hans(string):
 if __name__ == '__main__':
     string = "pen45导火www线hello"
     if __name__ == '__main__':
-        # printPath(1, 'G:/jz/www.t.com/application/index/lang')
-        printPath(1, 'G:/ac8/lang')
+        printPath(1, 'G:/jz/www.t.com/application/api/lang/id')
+        # printPath(1, 'G:/ac8/lang')
         print ('总文件数 =', allFileNum)
 
         # with open("H:/ShadowsocksR/chat.vue",encoding = "utf-8") as f:
