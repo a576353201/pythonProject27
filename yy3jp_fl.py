@@ -47,7 +47,7 @@ if __name__ == '__main__':
         )
         mycursor = mydb.cursor()
         translator = Translator()
-        mycursor.execute("select name,id from fa_wanlshop_category where type='goods' order by id asc limit 3")
+        mycursor.execute("select name,id from fa_wanlshop_category where type='goods' order by id asc")
 
         fldata = mycursor.fetchall()
         for row in fldata:
