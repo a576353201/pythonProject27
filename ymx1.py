@@ -1,9 +1,12 @@
+import io
+
 import requests
 from lxml import etree
 import pandas as pd
 import time
 import re
-
+import sys
+import os
 import openpyxl
 from selenium import webdriver
 from selenium.common.exceptions import UnexpectedAlertPresentException
@@ -11,8 +14,7 @@ from selenium.webdriver import DesiredCapabilities
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-
-
+sys.stdout=io.TextIOWrapper(sys.stdout.buffer,encoding="utf-8")
 def gethtml(url0, head):
     i = 0
     while i < 5:
@@ -368,7 +370,7 @@ url_list = ['http://www.amazon.com/dp/B07ZV21JVK?ref=myi_title_dp',  # 美国
 hea = {
     'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
     'accept-encoding': 'gzip, deflate, br',
-    'accept-language': 'zh-CN,zh;q=0.9',
+    'accept-language': 'utf-8,zh;q=0.9',
     'cache-control': 'max-age=0',
     'downlink': '8',
     'ect': '4g',
