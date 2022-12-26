@@ -28,21 +28,22 @@ def gethtml(url0,head):
 def get_link(url, hea):
     req = gethtml(url, hea)
     html = etree.HTML(req.text)
-    type_link0 = html.xpath('//*[@id="search"]/div[1]/div[1]/div/span[1]/div[1]/div[2]/div/div/div/div/div/div/div[3]/div[2]/h2/a/span')  # 排除上级
-    type_link01 = html.xpath('/html/body//a/span[@class="a-size-base-plus a-color-base a-text-normal"]')  # 排除上级
-    type_link02 = html.xpath('//*[@class="sg-col-inner"]//div[@class="a-section aok-relative s-image-square-aspect"]//img[@class="s-image"]//@src')  # 排除上级
+    # type_link0 = html.xpath('//*[@id="search"]/div[1]/div[1]/div/span[1]/div[1]/div[2]/div/div/div/div/div/div/div[3]/div[2]/h2/a/span')  # 排除上级
+    type_text = html.xpath('/html/body//a/span[@class="a-size-base-plus a-color-base a-text-normal"]')  # 排除上级
+    end_img0 = html.xpath('//*[@class="sg-col-inner"]//div[@class="a-section aok-relative s-image-square-aspect"]//img[@class="s-image"]//@src')  # 排除上级
+    end_link0 = html.xpath('//*[@class="sg-col-inner"]//a[@class="a-link-normal s-no-outline"]//@href')  # 排除上级
 
-    type_text = html.xpath('//*[@id="zg_browseRoot"]//span/text()')
-    end_link0 = html.xpath('//span[@class="zg_selected"]/../following-sibling::li[1]')  # 兄弟节点（之后）
-    end_link1 = html.xpath('//span[@class="zg_selected"]/../preceding-sibling::li[1]')  # 兄弟节点（之前）
-    if (len(end_link0) or len(end_link1)):
-        end_link = 1
-    else:
-        end_link = 0
-        if (len(type_link0) == 1):
-            print('***********',type_text)
-    time.sleep(5)
-    return type_link0,type_text, end_link
+    # type_text = html.xpath('//*[@id="zg_browseRoot"]//span/text()')
+    # end_link0 = html.xpath('//span[@class="zg_selected"]/../following-sibling::li[1]')  # 兄弟节点（之后）
+    # end_link1 = html.xpath('//span[@class="zg_selected"]/../preceding-sibling::li[1]')  # 兄弟节点（之前）
+    # if (len(end_link0) or len(end_link1)):
+    #     end_link = 1
+    # else:
+    #     end_link = 0
+    #     if (len(type_link0) == 1):
+    #         print('***********',type_text)
+    # time.sleep(5)
+    return end_img0,type_text, end_link0
 
 
 
@@ -51,7 +52,7 @@ def get_link(url, hea):
 
 
 # url = 'https://www.amazon.com/-/en/%E9%94%80%E5%94%AE%E6%8E%92%E8%A1%8C%E6%A6%9C-Home-Kitchen-%E5%AE%B6%E5%85%B7/zgbs/home-garden/1063306/ref=zg_bs_unv_hg_2_17873917011_3'
-url = 'https://www.amazon.com/s?k=basketball'
+url = 'https://www.amazon.com/s?k=basketball&language=en_US'
 
 print(url)
 hea = {
