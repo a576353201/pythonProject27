@@ -7,14 +7,14 @@ from pandas import DataFrame
 
 def gethtml(url0,head):
     i = 0
-    while i < 5:
+    while i < 20:
         try:
             html = requests.get(url = url0, headers = head,timeout = (10, 20))
             repeat = 0
             while (html.status_code != 200):  # 错误响应码重试
                 print('error: ', html.status_code)
-                time.sleep(20 + repeat * 5)
-                if (repeat < 5):
+                time.sleep(20 + repeat * 20)
+                if (repeat < 20):
                     repeat += 1
                 html = requests.get(url = url0, headers = head,timeout = (10, 20))
             return html
@@ -52,7 +52,7 @@ def get_link(url, hea):
 
 
 # url = 'https://www.amazon.com/-/en/%E9%94%80%E5%94%AE%E6%8E%92%E8%A1%8C%E6%A6%9C-Home-Kitchen-%E5%AE%B6%E5%85%B7/zgbs/home-garden/1063306/ref=zg_bs_unv_hg_2_17873917011_3'
-url = 'https://www.amazon.com/s?k=basketball&language=en_US'
+url = 'https://www.amazon.com/s?k=perfume&language=en_US'
 
 print(url)
 hea = {
@@ -73,6 +73,19 @@ type_link = []
 type_text = []
 
 type_link0,type_text0, end_link0 = get_link(url, hea)
+
+for link1 in end_link0:
+    url = link1
+    url = "https://www.amazon.com"+url+"&language=en"
+    req = gethtml(url, hea)
+    html = etree.HTML(req.text)
+    title = html.xpath('//*[@id="productTitle"]')
+    price = html.xpath('//span[@class="a-price aok-align-center reinventPricePriceToPayMargin priceToPay"]/span/span[@class="a-price-whole"]')
+    price2 = html.xpath('//span[@class="a-price aok-align-center reinventPricePriceToPayMargin priceToPay"]/span/span[@class="a-price-fraction"]')
+    # type_text = html.xpath('/html/body//a/span[@class="a-size-base-plus a-color-base a-text-normal"]')  # 排除上级
+
+    url = "https://www.amazon.com/"+url
+
 if (end_link0 != 0):
     type_link.append(url)
     type_text.append(type_text0[0])
