@@ -70,27 +70,27 @@ def get_price(html):
 def change_address(postal):
     while True:
         try:
-            driver.find_element_by_id('glow-ingress-line1').click()
-            # driver.find_element_by_id('nav-global-location-slot').click()
+            driver.find_element(By.ID, 'glow-ingress-line1').click()
+            # driver.find_element(By.ID, 'nav-global-location-slot').click()
             time.sleep(2)
         except Exception as e:
             driver.refresh()
             time.sleep(10)
             continue
         try:
-            driver.find_element_by_id("GLUXChangePostalCodeLink").click()
+            driver.find_element(By.ID, "GLUXChangePostalCodeLink").click()
             time.sleep(2)
         except:
             pass
         try:
-            driver.find_element_by_id('GLUXZipUpdateInput').send_keys(postal)
+            driver.find_element(By.ID, 'GLUXZipUpdateInput').send_keys(postal)
             time.sleep(1)
             break
         except Exception as NoSuchElementException:
             try:
-                driver.find_element_by_id('GLUXZipUpdateInput_0').send_keys(postal.split('-')[0])
+                driver.find_element(By.ID, 'GLUXZipUpdateInput_0').send_keys(postal.split('-')[0])
                 time.sleep(1)
-                driver.find_element_by_id('GLUXZipUpdateInput_1').send_keys(postal.split('-')[1])
+                driver.find_element(By.ID, 'GLUXZipUpdateInput_1').send_keys(postal.split('-')[1])
                 time.sleep(1)
                 break
             except Exception as NoSuchElementException:
@@ -98,7 +98,7 @@ def change_address(postal):
                 time.sleep(10)
                 continue
         print("重新选择地址")
-    driver.find_element_by_id('GLUXZipUpdate').click()
+    driver.find_element(By.ID, 'GLUXZipUpdate').click()
     time.sleep(1)
     driver.refresh()
     time.sleep(3)
