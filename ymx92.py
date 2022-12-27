@@ -87,7 +87,7 @@ for link1 in end_link0:
     price21= html.xpath('//span[contains(@class, "priceToPay")]/span[2]/span[3]')
     desc= html.xpath('//*[@id="aplus_feature_div"]/div/div/div[1]')
     desc1= html.xpath("//h2[contains(.,'Product Description')]")
-    desc2= html.xpath('//*[@id="aplus_feature_div"]')
+    desc2= html.xpath('//*[@id="aplus_feature_div"]')[0]
     original_html = tostring(desc2)
     print(desc2[0].text)
     # type_text = html.xpath('/html/body//a/span[@class="a-size-base-plus a-color-base a-text-normal"]')  # 排除上级
