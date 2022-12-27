@@ -3,6 +3,8 @@ from lxml import etree
 import pandas as pd
 import time
 import re
+
+from lxml.html import tostring
 from pandas import DataFrame
 
 def gethtml(url0,head):
@@ -82,6 +84,12 @@ for link1 in end_link0:
     title = html.xpath('//*[@id="productTitle"]')
     price = html.xpath('//span[@class="a-price aok-align-center reinventPricePriceToPayMargin priceToPay"]/span/span[@class="a-price-whole"]')
     price2 = html.xpath('//span[@class="a-price aok-align-center reinventPricePriceToPayMargin priceToPay"]/span/span[@class="a-price-fraction"]')
+    price21= html.xpath('//span[contains(@class, "priceToPay")]/span[2]/span[3]')
+    desc= html.xpath('//*[@id="aplus_feature_div"]/div/div/div[1]')
+    desc1= html.xpath("//h2[contains(.,'Product Description')]")
+    desc2= html.xpath('//*[@id="aplus_feature_div"]')
+    original_html = tostring(desc2)
+    print(desc2[0].text)
     # type_text = html.xpath('/html/body//a/span[@class="a-size-base-plus a-color-base a-text-normal"]')  # 排除上级
 
     url = "https://www.amazon.com/"+url
