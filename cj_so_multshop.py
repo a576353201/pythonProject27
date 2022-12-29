@@ -47,7 +47,7 @@ class DownLoadPictures(threading.Thread):
         # print('当前是链接为{}的图片下载！'.format(self.url))
         print('当前是线程为{}的图片下载！'.format(self.name))
         # 返回的数据在json里
-        sql="SELECT fa_wanlshop_goods.id,image,images FROM fa_wanlshop_goods WHERE fa_wanlshop_goods.shop_id ={}".format(self.name)
+        sql="SELECT fa_wanlshop_goods.id,image,images FROM fa_wanlshop_goods WHERE image1='' and fa_wanlshop_goods.shop_id ={}".format(self.name)
         self.cursor.execute(sql)
 
         row_list = self.cursor.fetchall()
@@ -69,13 +69,14 @@ class DownLoadPictures(threading.Thread):
             print('链接为{}已无图片'.format(self.url))
 
     def download_picture(self, image, images, id):
-        image = image.split('/')[-1]
-        sql = "select * from beautyImages where image = '{}'".format(image)
-        row_count = self.cursor.execute(sql)
-        if not row_count:
+
+        # sql = "select * from beautyImages where image1 = '{}'".format(image)
+        # row_count = self.cursor.execute(sql)
+        # if not row_count:
             try:
                 # downloadurl="https://cf.shopee.sg/file/3ea865696f7ae06d87ff4e9c4c304c16?x-oss-process=image/auto-orient,1/interlace,1/format,jpg/quality,q_90/sharpen,50"
                 images = images.split(',')
+                images1=''
                 for img in images:
                     resp = requests.get(img, verify=False)
                     img = img.split('/')[-1]
@@ -83,29 +84,36 @@ class DownLoadPictures(threading.Thread):
                     if resp.status_code == requests.codes.ok:
                         with open(STORE_PATH + '/' + img + '.jpg', 'wb') as f:
                             f.write(resp.content)
-                            sql="update fa_wanlshop_goods set images1="
+
 
 
 
                 resp = requests.get(image, verify=False)
+                image = image.split('/')[-1]
 
                 if resp.status_code == requests.codes.ok:
                     with open(STORE_PATH + '/' + image + '.jpg', 'wb') as f:
                          f.write(resp.content)
 
                 print('下载完成')
+                sql = "update fa_wanlshop_goods set images1=%s,image1=%s where id=%s"
+                images1=images1.strip(',')
+                id = (images1,image, id)
+                self.cursor.execute(sql, id)
+                spuid = self.cursor.lastrowid
+                self.conn.commit()
                 # 插入数据库
-                insert_sql = "INSERT INTO beautyImages(image,  createTime) values (%s, %s)"
+                # insert_sql = "INSERT INTO beautyImages(image,  createTime) values (%s, %s)"
                 try:
-                    self.cursor.execute(insert_sql, (image,  time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())))
-                    self.conn.commit()
+                    # self.cursor.execute(insert_sql, (image,  time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())))
+                    # self.conn.commit()
                     print('插入标题为{}, 链接为{}成功!')
                 except Exception:
                     print('插入标题为{}, 链接为{}失败, 失败原因是{}')
             except Exception:
                 print('标题为{}， 链接为{}下载失败,失败原因是{}')
-        else:
-            print('标题为{}， 链接为{}已存在')
+        # else:
+        #     print('标题为{}， 链接为{}已存在')
 
 
 if __name__ == '__main__':

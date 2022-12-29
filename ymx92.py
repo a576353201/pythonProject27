@@ -91,7 +91,7 @@ for link1 in end_link0:
     original_html = tostring(desc2)
     print(desc2[0].text)
 
-    price = re.findall(r'"isPreorder":.+?,"price":(.+?),"doesMAPPolicyApply":.+?', html, re.S)[0]
+    price = re.findall(r'var data = \{(.+?)\};', req.text, re.S)[0]
 
     # type_text = html.xpath('/html/body//a/span[@class="a-size-base-plus a-color-base a-text-normal"]')  # 排除上级
 
