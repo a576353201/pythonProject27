@@ -59,7 +59,7 @@ class DownLoadPictures(threading.Thread):
                 downloadurl = elem['qhimg_downurl']
                 fromUrl = elem['purl']
                 title = elem['title']
-                # self.download_picture(downloadurl, title, fromUrl)
+                self.download_picture(downloadurl, title, fromUrl)
         else:
             print('链接为{}已无图片'.format(self.url))
 

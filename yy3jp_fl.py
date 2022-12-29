@@ -52,10 +52,10 @@ if __name__ == '__main__':
         fldata = mycursor.fetchall()
         for row in fldata:
             # for index in range(len(result)):
-            fyres = translator.translate(row[0], dest='id').text
+            fyres = translator.translate(row[0], dest='ja').text
             # dic.setdefault("$"+str(index+1)+"$"+str(result[index])+"$"+str(index+1)+"$",[]).append(fyres)
             # dic1[index] = fyres
-            sql = "update  fa_wanlshop_category set idname='%s' where id=%s" % (fyres, row[1])
+            sql = "update  fa_wanlshop_category set jpname='%s' where id=%s" % (fyres, row[1])
             mycursor.execute(sql)
             mydb.commit()
         # printPath(1, 'G:/ac8/lang')

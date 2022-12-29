@@ -42,8 +42,8 @@ def gethtml(url0, head):
 mydb = mysql.connector.connect(
     host="localhost",
     user="root",
-    passwd="tE9MKDewI5hfA5gT",
-    database="spdata8"
+    passwd="521ba1ea58d735a6",
+    database="data4"
 
 )
 

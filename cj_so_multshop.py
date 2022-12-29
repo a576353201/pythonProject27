@@ -63,7 +63,7 @@ class DownLoadPictures(threading.Thread):
                 image = elem['image']
                 images = elem['images']
                 # fromUrl = elem['purl']
-                # title = elem['title']
+                id = elem['id']
                 self.download_picture(image, images, id)
         else:
             print('链接为{}已无图片'.format(self.url))
@@ -79,9 +79,11 @@ class DownLoadPictures(threading.Thread):
                 for img in images:
                     resp = requests.get(img, verify=False)
                     img = img.split('/')[-1]
+                    images1+=img+","
                     if resp.status_code == requests.codes.ok:
                         with open(STORE_PATH + '/' + img + '.jpg', 'wb') as f:
                             f.write(resp.content)
+                            sql="update fa_wanlshop_goods set images1="
 
 
 

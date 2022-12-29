@@ -79,7 +79,7 @@ def login1(secret, account):
 
 def login(username, password):
 
-            url = 'https://ssz44444.com/'
+            url = 'https://sg.xiapibuy.com/'
             # driver = webdriver.Chrome(
             #     executable_path='D:\chromedriver_win32\chromedriver.exe')
             driver = webdriver.Firefox()
@@ -145,10 +145,8 @@ if __name__ == '__main__':
         'Origin': 'https://ssz44444.com',
         'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36',
     }
-    if isLogin():
-        print('您已经登录')
-    else:
-        login('abc889977', 'abc456')
+
+    login('abc889977', 'abc456')
 
 
 

@@ -57,8 +57,8 @@ def printPath(level, path):
             printPath((int(dirList[0]) + 1), path + '/' + dl)
     for fl in fileList:
         ext=os.path.splitext(fl)[-1]
-        # if(fl!='tr.php'):
-        #     continue
+        if(fl!='jp.php'):
+            continue
         if(ext!='.php'):
             continue
         # if(ext=='.js'):
@@ -80,13 +80,13 @@ def printPath(level, path):
             #     'translate.google.co.kr',
             # ])
 
-        fy=translator.translate('我是中国人.', dest='tr').text
+        fy=translator.translate('我是中国人.', dest='th').text
 
         dic = {}
         dic1 = {}
         fylist=[]
         for index in range(len(result)):
-            fyres = translator.translate(result[index], dest='id').text
+            fyres = translator.translate(result[index], dest='ja').text
             dic.setdefault("$"+str(index+1)+"$"+str(result[index])+"$"+str(index+1)+"$",[]).append(fyres)
             dic1[index] = fyres
             fylist.append(fyres)
@@ -127,7 +127,7 @@ def transform2_zh_hans(string):
 if __name__ == '__main__':
     string = "pen45导火www线hello"
     if __name__ == '__main__':
-        printPath(1, 'G:/jz/www.t.com/application/api/lang/id')
+        printPath(1, 'G:/jz/www.t.com/application/api/lang')
         # printPath(1, 'G:/ac8/lang')
         print ('总文件数 =', allFileNum)
 
