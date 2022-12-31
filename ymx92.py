@@ -1,11 +1,16 @@
+import json
+
 import requests
 from lxml import etree
 import pandas as pd
 import time
 import re
+import sys
+import io
 
 from lxml.html import tostring
 from pandas import DataFrame
+# sys.stdout=io.TextIOWrapper(sys.stdout.buffer,encoding="utf-8")
 
 def gethtml(url0,head):
     i = 0
@@ -89,9 +94,24 @@ for link1 in end_link0:
     desc1= html.xpath("//h2[contains(.,'Product Description')]")
     desc2= html.xpath('//*[@id="aplus_feature_div"]')[0]
     original_html = tostring(desc2)
-    print(desc2[0].text)
-
+    # print(desc2[0].text)
+    # .decode('utf-8')
     price = re.findall(r'var data = \{(.+?)\};', req.text, re.S)[0]
+    pattern = re.compile(r'"large":"(.+?)"')  # 查找数字
+    result1 = pattern.findall(req.text)
+    # price = re.findall('', req.text, re.S)
+    price=price.strip()
+    price = "{"+price+"}"
+    price=price.rstrip()
+    # json_encode = json.dumps(price)
+    price = price.replace('"', '@@')
+    price = price.replace("'", '"')
+    price = price.replace("$", 'ttt')
+    price = price.replace("@@", "'")
+    b = eval(price)
+
+    json_decode = json.loads(price)
+    # //,strict=False
 
     # type_text = html.xpath('/html/body//a/span[@class="a-size-base-plus a-color-base a-text-normal"]')  # 排除上级
 
