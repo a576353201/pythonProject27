@@ -97,20 +97,24 @@ for link1 in end_link0:
     # print(desc2[0].text)
     # .decode('utf-8')
     price = re.findall(r'var data = \{(.+?)\};', req.text, re.S)[0]
+    bb = req.text.find("colorImages': { 'initial'")
+    bb1 = req.text.find("colorToAsin': {'initial")
+    tt = req.text[bb:bb1]
     pattern = re.compile(r'"large":"(.+?)"')  # 查找数字
-    result1 = pattern.findall(req.text)
+    result1 = pattern.findall(tt)
+    a=2
     # price = re.findall('', req.text, re.S)
-    price=price.strip()
-    price = "{"+price+"}"
-    price=price.rstrip()
-    # json_encode = json.dumps(price)
-    price = price.replace('"', '@@')
-    price = price.replace("'", '"')
-    price = price.replace("$", 'ttt')
-    price = price.replace("@@", "'")
-    b = eval(price)
-
-    json_decode = json.loads(price)
+    # price=price.strip()
+    # price = "{"+price+"}"
+    # price=price.rstrip()
+    # # json_encode = json.dumps(price)
+    # price = price.replace('"', '@@')
+    # price = price.replace("'", '"')
+    # price = price.replace("$", 'ttt')
+    # price = price.replace("@@", "'")
+    # b = eval(price)
+    #
+    # json_decode = json.loads(price)
     # //,strict=False
 
     # type_text = html.xpath('/html/body//a/span[@class="a-size-base-plus a-color-base a-text-normal"]')  # 排除上级
