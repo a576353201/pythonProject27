@@ -132,6 +132,16 @@ for link1 in end_link0:
         activity, views, description, url)
     print(title)
 
+    sql = "INSERT INTO fa_wanlshop_wholesale_spu (name, item,goods_id) VALUES (%s, %s, %s)"
+    val = (spuname, item, goodsid)
+    mycursor.execute(sql, val)
+    spuid = mycursor.lastrowid
+
+    sql = "INSERT INTO fa_wanlshop_wholesale_sku (difference, price,market_price,wholesale_price,stock,goods_id,weigh,sn) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
+    val = (difference, price, market_price, price, stock, goodsid, 1, sn)
+    mycursor.execute(sql, val)
+    skuid = mycursor.lastrowid
+
     # sql = 'Insert  Into `fa_wanlshop_wholesale` (`title`,`image`,`images`,`price`,`category_id`,`shop_id`,`brand_id`,`freight_id`,`grounding`,`specs`,`distribution`,`activity`,`views`,`content`,`proid`) Values (`%s`, `%s`, `%s`, %s, %s, %s,%s, %s, %s, `%s`, %s, %s, %s, `%s`, `%s`)' % (
     #     title, image, images, price, category_id, shop_id, brand_id, freight_id, grounding, specs,
     #     distribution,
