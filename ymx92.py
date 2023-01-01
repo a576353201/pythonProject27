@@ -7,6 +7,8 @@ import time
 import re
 import sys
 import io
+import MySQLdb
+import mysql.connector
 
 from lxml.html import tostring
 from pandas import DataFrame
@@ -14,20 +16,20 @@ from pandas import DataFrame
 
 def gethtml(url0,head):
     i = 0
-    while i < 20:
+    while i < 5:
         try:
             html = requests.get(url = url0, headers = head,timeout = (10, 20))
             repeat = 0
             while (html.status_code != 200):  # 错误响应码重试
                 print('error: ', html.status_code)
-                time.sleep(20 + repeat * 20)
-                if (repeat < 20):
+                time.sleep(20 + repeat * 5)
+                if (repeat < 5):
                     repeat += 1
                 html = requests.get(url = url0, headers = head,timeout = (10, 20))
             return html
         except requests.exceptions.RequestException:
             print('超时重试次数: ', i + 1)
-            time.sleep(1)
+            time.sleep(10)
             i += 1
     raise Exception()
 
@@ -78,6 +80,14 @@ hea = {
 
 type_link = []
 type_text = []
+mydb = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    passwd="a9cfe255a2c05cc3",
+    database="shopdata6"
+
+)
+mycursor = mydb.cursor()
 
 type_link0,type_text0, end_link0 = get_link(url, hea)
 
@@ -103,6 +113,34 @@ for link1 in end_link0:
     pattern = re.compile(r'"large":"(.+?)"')  # 查找数字
     result1 = pattern.findall(tt)
     a=2
+
+    category_id = v2
+    freight_id = 1
+    shop_id = 1
+    brand_id = 1
+    grounding = 1
+    specs = 'single'
+    distribution = 'false'
+    activity = 'false'
+    views = 0
+    description = ''
+
+    sql = 'Insert  Into `fa_wanlshop_wholesale` (`title`,`image`,`images`,`price`,`wholesale_price`,`category_id`,`shop_id`,`brand_id`,`freight_id`,`grounding`,`specs`,`distribution`,`activity`,`views`,`content`,`proid`) Values (%s,%s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s)'
+    val = (
+        title, image, images, price, price, category_id, -1, brand_id, freight_id, grounding, specs,
+        distribution,
+        activity, views, description, proid)
+    print(title)
+
+    # sql = 'Insert  Into `fa_wanlshop_wholesale` (`title`,`image`,`images`,`price`,`category_id`,`shop_id`,`brand_id`,`freight_id`,`grounding`,`specs`,`distribution`,`activity`,`views`,`content`,`proid`) Values (`%s`, `%s`, `%s`, %s, %s, %s,%s, %s, %s, `%s`, %s, %s, %s, `%s`, `%s`)' % (
+    #     title, image, images, price, category_id, shop_id, brand_id, freight_id, grounding, specs,
+    #     distribution,
+    #     activity, views, description, proid)
+    try:
+        mycursor.execute(sql, val)
+    except MySQLdb.Error as e:
+        print(e)
+    goodsid = mycursor.lastrowid
     # price = re.findall('', req.text, re.S)
     # price=price.strip()
     # price = "{"+price+"}"
