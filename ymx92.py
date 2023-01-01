@@ -127,9 +127,9 @@ for link1 in end_link0:
 
     sql = 'Insert  Into `fa_wanlshop_wholesale` (`title`,`image`,`images`,`price`,`wholesale_price`,`category_id`,`shop_id`,`brand_id`,`freight_id`,`grounding`,`specs`,`distribution`,`activity`,`views`,`content`,`proid`) Values (%s,%s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s)'
     val = (
-        title, image, images, price, price, category_id, -1, brand_id, freight_id, grounding, specs,
+        title, "image", "images", price, price, category_id, -1, brand_id, freight_id, grounding, specs,
         distribution,
-        activity, views, description, proid)
+        activity, views, description, url)
     print(title)
 
     # sql = 'Insert  Into `fa_wanlshop_wholesale` (`title`,`image`,`images`,`price`,`category_id`,`shop_id`,`brand_id`,`freight_id`,`grounding`,`specs`,`distribution`,`activity`,`views`,`content`,`proid`) Values (`%s`, `%s`, `%s`, %s, %s, %s,%s, %s, %s, `%s`, %s, %s, %s, `%s`, `%s`)' % (
