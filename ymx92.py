@@ -124,7 +124,12 @@ for link1 in end_link0:
     activity = 'false'
     views = 0
     description = ''
-
+    stock = 9999
+    sn = 11
+    market_price=price
+    item="color1"
+    difference="color1"
+    spuname="color"
     sql = 'Insert  Into `fa_wanlshop_wholesale` (`title`,`image`,`images`,`price`,`wholesale_price`,`category_id`,`shop_id`,`brand_id`,`freight_id`,`grounding`,`specs`,`distribution`,`activity`,`views`,`content`,`proid`) Values (%s,%s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s)'
     val = (
         title, "image", "images", price, price, category_id, -1, brand_id, freight_id, grounding, specs,
