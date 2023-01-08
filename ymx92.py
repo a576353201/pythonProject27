@@ -83,8 +83,8 @@ type_text = []
 mydb = mysql.connector.connect(
     host="localhost",
     user="root",
-    passwd="a9cfe255a2c05cc3",
-    database="shopdata6"
+    passwd="tE9MKDewI5hfA5gT",
+    database="spdata8"
 
 )
 mycursor = mydb.cursor()
@@ -114,7 +114,7 @@ for link1 in end_link0:
     result1 = pattern.findall(tt)
     a=2
 
-    category_id = v2
+    category_id = 0 #v2
     freight_id = 1
     shop_id = 1
     brand_id = 1
@@ -130,19 +130,21 @@ for link1 in end_link0:
     item="color1"
     difference="color1"
     spuname="color"
-    sql = 'Insert  Into `fa_wanlshop_wholesale` (`title`,`image`,`images`,`price`,`wholesale_price`,`category_id`,`shop_id`,`brand_id`,`freight_id`,`grounding`,`specs`,`distribution`,`activity`,`views`,`content`,`proid`) Values (%s,%s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s)'
+    sql = 'Insert  Into `fa_wanlshop_wholesale1` (`title`,`image`,`images`,`price`,`wholesale_price`,`category_id`,`shop_id`,`brand_id`,`freight_id`,`grounding`,`specs`,`distribution`,`activity`,`views`,`content`,`proid`) Values (%s,%s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s)'
     val = (
         title, "image", "images", price, price, category_id, -1, brand_id, freight_id, grounding, specs,
         distribution,
         activity, views, description, url)
     print(title)
+    mycursor.execute(sql, val)
+    goodsid = mycursor.lastrowid
 
-    sql = "INSERT INTO fa_wanlshop_wholesale_spu (name, item,goods_id) VALUES (%s, %s, %s)"
+    sql = "INSERT INTO fa_wanlshop_wholesale_spu1 (name, item,goods_id) VALUES (%s, %s, %s)"
     val = (spuname, item, goodsid)
     mycursor.execute(sql, val)
     spuid = mycursor.lastrowid
 
-    sql = "INSERT INTO fa_wanlshop_wholesale_sku (difference, price,market_price,wholesale_price,stock,goods_id,weigh,sn) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
+    sql = "INSERT INTO fa_wanlshop_wholesale_sku1 (difference, price,market_price,wholesale_price,stock,goods_id,weigh,sn) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
     val = (difference, price, market_price, price, stock, goodsid, 1, sn)
     mycursor.execute(sql, val)
     skuid = mycursor.lastrowid
@@ -174,92 +176,4 @@ for link1 in end_link0:
 
     url = "https://www.amazon.com/"+url
 
-if (end_link0 != 0):
-    type_link.append(url)
-    type_text.append(type_text0[0])
-    print('新增：', type_text0[0])
-else:
-    for link1 in type_link0:  # 家具后 1 级-----卧室、客厅
-        url = link1
-        if (type_link0.index(link1) > 100):
-            continue
-        type_link1,type_text0, end_link0 = get_link(url, hea)
-        print('第一级：', type_text0)
-        if (end_link0 != 0):
-            type_link.append(url)
-            type_text.append(type_text0[0])
-            print('新增：', type_text0[0])
-            continue
-        else:
-            for link2 in type_link1:  # 家具后 2 级-----床、衣柜
-                url = link2
-                if (type_link1.index(link2) > 100):
-                    continue
-                type_link2,type_text0, end_link0 = get_link(url, hea)
-                print('第二级：', type_text0)
-                if (end_link0 != 0):
-                    type_link.append(url)
-                    type_text.append(type_text0[0])
-                    print('新增：', type_text0[0])
-                    continue
-                else:
-                    for link3 in type_link2:  # 家具后 3 级-----床头，床架
-                        url = link3
-                        if (type_link2.index(link3) > 100):
-                            continue
-                        type_link3,type_text0, end_link0 = get_link(url, hea)
-                        print('第三级：', type_text0)
-                        if (end_link0 != 0):
-                            type_link.append(url)
-                            type_text.append(type_text0[0])
-                            print('新增：', type_text0[0])
-                            continue
-                        else:
-                            for link4 in type_link3:  # 家具后 4 级-----Adjustable Bases、床板
-                                url = link4
-                                if (type_link3.index(link4) > 100):
-                                    continue
-                                type_link4,type_text0, end_link0 = get_link(url, hea)
-                                print('第四级：', type_text0)
-                                if (end_link0 != 0):
-                                    type_link.append(url)
-                                    type_text.append(type_text0[0])
-                                    print('新增：', type_text0[0])
-                                    continue
-                                else:
-                                    for link5 in type_link4:  # 家具后 5 级-----Adjustable Bases、床板
-                                        url = link5
-                                        if (type_link4.index(link5) > 100):
-                                            continue
-                                        type_link5,type_text0, end_link0 = get_link(url, hea)
-                                        print('第五级：', type_text0)
-                                        if (end_link0 != 0):
-                                            type_link.append(url)
-                                            type_text.append(type_text0[0])
-                                            print('新增：', type_text0[0])
-                                            continue
-                                        else:
-                                            for link6 in type_link5:  # 家具后 6 级-----Adjustable Bases、床板
-                                                url = link6
-                                                if (type_link5.index(link6) > 100):
-                                                    continue
-                                                type_link6,type_text0, end_link0 = get_link(url, hea)
-                                                print('第六级：', type_text0)
-                                                if (end_link0 != 0):
-                                                    type_link.append(url)
-                                                    type_text.append(type_text0[0])
-                                                    print('新增：', type_text0[0])
-                                                    continue
-
-
-
-
-df = DataFrame({
-    '类别': type_text,
-    '链接': type_link
-
-})
-
-path0 = 'd:/pm8.csv'
-df.to_csv(path0, encoding='utf-8', index=False)  # 去掉index，保留头部
 
