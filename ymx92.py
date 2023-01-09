@@ -1,4 +1,5 @@
 import json
+from decimal import Decimal
 
 import requests
 from lxml import etree
@@ -118,11 +119,14 @@ for link1 in end_link0:
 
     pattern = re.compile(r'"displayPrice":"(.+?)"')  # 查找数字
     xsprice = pattern.findall(req.text)
+    if len(xsprice)==0:
+        continue
+
     xsprice=xsprice[0]
     pattern = re.compile(r'"large":"(.+?)"')  # 查找数字
     result1 = pattern.findall(tt)
     a=2
-
+    images = ','.join(result1)
     category_id = 0 #v2
     freight_id = 1
     shop_id = 1
@@ -139,9 +143,15 @@ for link1 in end_link0:
     item="color1"
     difference="color1"
     spuname="color"
+    original_html=str(original_html)
+    title=str(title)
+    xsprice= xsprice.replace("$","")
+    xsprice= xsprice.replace("GBP ","")
+    xsprice= xsprice.replace("GBP","")
+    xsprice=float(xsprice)
     sql = 'Insert  Into `fa_wanlshop_wholesale1` (`title`,`image`,`images`,`price`,`wholesale_price`,`category_id`,`shop_id`,`brand_id`,`freight_id`,`grounding`,`specs`,`distribution`,`activity`,`views`,`content`,`proid`) Values (%s,%s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s)'
     val = (
-        title, "image", "images", xsprice, xsprice, category_id, -1, brand_id, freight_id, grounding, specs,
+        title, "image", images, xsprice, xsprice, category_id, -1, brand_id, freight_id, grounding, specs,
         distribution,
         activity, views, original_html, url)
     print(title)
@@ -154,10 +164,10 @@ for link1 in end_link0:
     spuid = mycursor.lastrowid
 
     sql = "INSERT INTO fa_wanlshop_wholesale_sku1 (difference, price,market_price,wholesale_price,stock,goods_id,weigh,sn) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
-    val = (difference, price, market_price, price, stock, goodsid, 1, sn)
+    val = (difference, xsprice, xsprice, xsprice, stock, goodsid, 1, sn)
     mycursor.execute(sql, val)
     skuid = mycursor.lastrowid
-
+    mydb.commit()
     # sql = 'Insert  Into `fa_wanlshop_wholesale` (`title`,`image`,`images`,`price`,`category_id`,`shop_id`,`brand_id`,`freight_id`,`grounding`,`specs`,`distribution`,`activity`,`views`,`content`,`proid`) Values (`%s`, `%s`, `%s`, %s, %s, %s,%s, %s, %s, `%s`, %s, %s, %s, `%s`, `%s`)' % (
     #     title, image, images, price, category_id, shop_id, brand_id, freight_id, grounding, specs,
     #     distribution,
