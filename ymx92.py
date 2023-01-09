@@ -93,10 +93,14 @@ type_link0,type_text0, end_link0 = get_link(url, hea)
 
 for link1 in end_link0:
     url = link1
+    if (url.find("s?k=")>-1):
+        continue
+
     url = "https://www.amazon.com"+url+"&language=en"
     req = gethtml(url, hea)
     html = etree.HTML(req.text)
-    title = html.xpath('//*[@id="productTitle"]')
+    title = html.xpath('//*[@id="productTitle"]/text()')
+    title=title[0]
     price = html.xpath('//span[@class="a-price aok-align-center reinventPricePriceToPayMargin priceToPay"]/span/span[@class="a-price-whole"]')
     price2 = html.xpath('//span[@class="a-price aok-align-center reinventPricePriceToPayMargin priceToPay"]/span/span[@class="a-price-fraction"]')
     price21= html.xpath('//span[contains(@class, "priceToPay")]/span[2]/span[3]')
@@ -110,6 +114,11 @@ for link1 in end_link0:
     bb = req.text.find("colorImages': { 'initial'")
     bb1 = req.text.find("colorToAsin': {'initial")
     tt = req.text[bb:bb1]
+
+
+    pattern = re.compile(r'"displayPrice":"(.+?)"')  # 查找数字
+    xsprice = pattern.findall(req.text)
+    xsprice=xsprice[0]
     pattern = re.compile(r'"large":"(.+?)"')  # 查找数字
     result1 = pattern.findall(tt)
     a=2
@@ -132,9 +141,9 @@ for link1 in end_link0:
     spuname="color"
     sql = 'Insert  Into `fa_wanlshop_wholesale1` (`title`,`image`,`images`,`price`,`wholesale_price`,`category_id`,`shop_id`,`brand_id`,`freight_id`,`grounding`,`specs`,`distribution`,`activity`,`views`,`content`,`proid`) Values (%s,%s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s)'
     val = (
-        title, "image", "images", price, price, category_id, -1, brand_id, freight_id, grounding, specs,
+        title, "image", "images", xsprice, xsprice, category_id, -1, brand_id, freight_id, grounding, specs,
         distribution,
-        activity, views, description, url)
+        activity, views, original_html, url)
     print(title)
     mycursor.execute(sql, val)
     goodsid = mycursor.lastrowid
