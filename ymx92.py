@@ -62,9 +62,9 @@ def get_link(url, hea):
 
 
 # url = 'https://www.amazon.com/-/en/%E9%94%80%E5%94%AE%E6%8E%92%E8%A1%8C%E6%A6%9C-Home-Kitchen-%E5%AE%B6%E5%85%B7/zgbs/home-garden/1063306/ref=zg_bs_unv_hg_2_17873917011_3'
-url = 'https://www.amazon.com/s?k=perfume&language=en_US'
 
-print(url)
+
+
 hea = {
     'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
     'accept-encoding': 'gzip, deflate, br',
@@ -85,12 +85,20 @@ mydb = mysql.connector.connect(
     host="localhost",
     user="root",
     passwd="tE9MKDewI5hfA5gT",
-    database="spdata8"
+    database="spdata9"
 
 )
 mycursor = mydb.cursor()
 
-type_link0,type_text0, end_link0 = get_link(url, hea)
+mycursor.execute("SELECT * FROM fa_caiji_keylist")
+fldata = mycursor.fetchall()
+
+for i in range(0, len(fldata), 1):
+    url = 'https://www.amazon.com/s?k='+str(fldata[i]["keyword"])+'&language=en_US'
+    type_link0, type_text0, end_link0 = get_link(url, hea)
+    print(url)
+
+
 
 for link1 in end_link0:
     url = link1
@@ -126,7 +134,10 @@ for link1 in end_link0:
     pattern = re.compile(r'"large":"(.+?)"')  # 查找数字
     result1 = pattern.findall(tt)
     a=2
+    if len(result1)==0:
+        continue
     images = ','.join(result1)
+    image = result1[0]
     category_id = 0 #v2
     freight_id = 1
     shop_id = 1
@@ -151,22 +162,22 @@ for link1 in end_link0:
     xsprice=float(xsprice)
     sql = 'Insert  Into `fa_wanlshop_wholesale1` (`title`,`image`,`images`,`price`,`wholesale_price`,`category_id`,`shop_id`,`brand_id`,`freight_id`,`grounding`,`specs`,`distribution`,`activity`,`views`,`content`,`proid`) Values (%s,%s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s)'
     val = (
-        title, "image", images, xsprice, xsprice, category_id, -1, brand_id, freight_id, grounding, specs,
+        title, image, images, xsprice, xsprice, category_id, -1, brand_id, freight_id, grounding, specs,
         distribution,
         activity, views, original_html, url)
     print(title)
     mycursor.execute(sql, val)
     goodsid = mycursor.lastrowid
 
-    sql = "INSERT INTO fa_wanlshop_wholesale_spu1 (name, item,goods_id) VALUES (%s, %s, %s)"
-    val = (spuname, item, goodsid)
-    mycursor.execute(sql, val)
-    spuid = mycursor.lastrowid
-
-    sql = "INSERT INTO fa_wanlshop_wholesale_sku1 (difference, price,market_price,wholesale_price,stock,goods_id,weigh,sn) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
-    val = (difference, xsprice, xsprice, xsprice, stock, goodsid, 1, sn)
-    mycursor.execute(sql, val)
-    skuid = mycursor.lastrowid
+    # sql = "INSERT INTO fa_wanlshop_wholesale_spu1 (name, item,goods_id) VALUES (%s, %s, %s)"
+    # val = (spuname, item, goodsid)
+    # mycursor.execute(sql, val)
+    # spuid = mycursor.lastrowid
+    #
+    # sql = "INSERT INTO fa_wanlshop_wholesale_sku1 (difference, price,market_price,wholesale_price,stock,goods_id,weigh,sn) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
+    # val = (difference, xsprice, xsprice, xsprice, stock, goodsid, 1, sn)
+    # mycursor.execute(sql, val)
+    # skuid = mycursor.lastrowid
     mydb.commit()
     # sql = 'Insert  Into `fa_wanlshop_wholesale` (`title`,`image`,`images`,`price`,`category_id`,`shop_id`,`brand_id`,`freight_id`,`grounding`,`specs`,`distribution`,`activity`,`views`,`content`,`proid`) Values (`%s`, `%s`, `%s`, %s, %s, %s,%s, %s, %s, `%s`, %s, %s, %s, `%s`, `%s`)' % (
     #     title, image, images, price, category_id, shop_id, brand_id, freight_id, grounding, specs,
