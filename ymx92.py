@@ -90,120 +90,124 @@ mydb = mysql.connector.connect(
 )
 mycursor = mydb.cursor()
 
-mycursor.execute("SELECT * FROM fa_caiji_keylist")
+mycursor.execute("SELECT keyword FROM fa_caiji_keylist")
 fldata = mycursor.fetchall()
 
 for i in range(0, len(fldata), 1):
-    url = 'https://www.amazon.com/s?k='+str(fldata[i]["keyword"])+'&language=en_US'
+    if(len(fldata[i][0])==0):
+        continue
+    url = 'https://www.amazon.com/s?k='+fldata[i][0]+'&language=en_US'
     type_link0, type_text0, end_link0 = get_link(url, hea)
     print(url)
+    for link1 in end_link0:
+        url = link1
+        if (url.find("s?k=") > -1):
+            continue
 
+        url = "https://www.amazon.com" + url + "&language=en"
+        req = gethtml(url, hea)
+        html = etree.HTML(req.text)
+        title = html.xpath('//*[@id="productTitle"]/text()')
+        title = title[0]
+        price = html.xpath(
+            '//span[@class="a-price aok-align-center reinventPricePriceToPayMargin priceToPay"]/span/span[@class="a-price-whole"]')
+        price2 = html.xpath(
+            '//span[@class="a-price aok-align-center reinventPricePriceToPayMargin priceToPay"]/span/span[@class="a-price-fraction"]')
+        price21 = html.xpath('//span[contains(@class, "priceToPay")]/span[2]/span[3]')
+        desc = html.xpath('//*[@id="aplus_feature_div"]/div/div/div[1]')
+        desc1 = html.xpath("//h2[contains(.,'Product Description')]")
+        desc2 = html.xpath('//*[@id="aplus_feature_div"]')[0]
+        original_html = tostring(desc2)
+        # print(desc2[0].text)
+        # .decode('utf-8')
+        price = re.findall(r'var data = \{(.+?)\};', req.text, re.S)[0]
+        bb = req.text.find("colorImages': { 'initial'")
+        bb1 = req.text.find("colorToAsin': {'initial")
+        tt = req.text[bb:bb1]
 
+        pattern = re.compile(r'"displayPrice":"(.+?)"')  # 查找数字
+        xsprice = pattern.findall(req.text)
+        if len(xsprice) == 0:
+            continue
 
-for link1 in end_link0:
-    url = link1
-    if (url.find("s?k=")>-1):
-        continue
-
-    url = "https://www.amazon.com"+url+"&language=en"
-    req = gethtml(url, hea)
-    html = etree.HTML(req.text)
-    title = html.xpath('//*[@id="productTitle"]/text()')
-    title=title[0]
-    price = html.xpath('//span[@class="a-price aok-align-center reinventPricePriceToPayMargin priceToPay"]/span/span[@class="a-price-whole"]')
-    price2 = html.xpath('//span[@class="a-price aok-align-center reinventPricePriceToPayMargin priceToPay"]/span/span[@class="a-price-fraction"]')
-    price21= html.xpath('//span[contains(@class, "priceToPay")]/span[2]/span[3]')
-    desc= html.xpath('//*[@id="aplus_feature_div"]/div/div/div[1]')
-    desc1= html.xpath("//h2[contains(.,'Product Description')]")
-    desc2= html.xpath('//*[@id="aplus_feature_div"]')[0]
-    original_html = tostring(desc2)
-    # print(desc2[0].text)
-    # .decode('utf-8')
-    price = re.findall(r'var data = \{(.+?)\};', req.text, re.S)[0]
-    bb = req.text.find("colorImages': { 'initial'")
-    bb1 = req.text.find("colorToAsin': {'initial")
-    tt = req.text[bb:bb1]
-
-
-    pattern = re.compile(r'"displayPrice":"(.+?)"')  # 查找数字
-    xsprice = pattern.findall(req.text)
-    if len(xsprice)==0:
-        continue
-
-    xsprice=xsprice[0]
-    pattern = re.compile(r'"large":"(.+?)"')  # 查找数字
-    result1 = pattern.findall(tt)
-    a=2
-    if len(result1)==0:
-        continue
-    images = ','.join(result1)
-    image = result1[0]
-    category_id = 0 #v2
-    freight_id = 1
-    shop_id = 1
-    brand_id = 1
-    grounding = 1
-    specs = 'single'
-    distribution = 'false'
-    activity = 'false'
-    views = 0
-    description = ''
-    stock = 9999
-    sn = 11
-    market_price=price
-    item="color1"
-    difference="color1"
-    spuname="color"
-    original_html=str(original_html)
-    title=str(title)
-    xsprice= xsprice.replace("$","")
-    xsprice= xsprice.replace("GBP ","")
-    xsprice= xsprice.replace("GBP","")
-    xsprice=float(xsprice)
-    sql = 'Insert  Into `fa_wanlshop_wholesale1` (`title`,`image`,`images`,`price`,`wholesale_price`,`category_id`,`shop_id`,`brand_id`,`freight_id`,`grounding`,`specs`,`distribution`,`activity`,`views`,`content`,`proid`) Values (%s,%s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s)'
-    val = (
-        title, image, images, xsprice, xsprice, category_id, -1, brand_id, freight_id, grounding, specs,
-        distribution,
-        activity, views, original_html, url)
-    print(title)
-    mycursor.execute(sql, val)
-    goodsid = mycursor.lastrowid
-
-    # sql = "INSERT INTO fa_wanlshop_wholesale_spu1 (name, item,goods_id) VALUES (%s, %s, %s)"
-    # val = (spuname, item, goodsid)
-    # mycursor.execute(sql, val)
-    # spuid = mycursor.lastrowid
-    #
-    # sql = "INSERT INTO fa_wanlshop_wholesale_sku1 (difference, price,market_price,wholesale_price,stock,goods_id,weigh,sn) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
-    # val = (difference, xsprice, xsprice, xsprice, stock, goodsid, 1, sn)
-    # mycursor.execute(sql, val)
-    # skuid = mycursor.lastrowid
-    mydb.commit()
-    # sql = 'Insert  Into `fa_wanlshop_wholesale` (`title`,`image`,`images`,`price`,`category_id`,`shop_id`,`brand_id`,`freight_id`,`grounding`,`specs`,`distribution`,`activity`,`views`,`content`,`proid`) Values (`%s`, `%s`, `%s`, %s, %s, %s,%s, %s, %s, `%s`, %s, %s, %s, `%s`, `%s`)' % (
-    #     title, image, images, price, category_id, shop_id, brand_id, freight_id, grounding, specs,
-    #     distribution,
-    #     activity, views, description, proid)
-    try:
+        xsprice = xsprice[0]
+        pattern = re.compile(r'"large":"(.+?)"')  # 查找数字
+        result1 = pattern.findall(tt)
+        a = 2
+        if len(result1) == 0:
+            continue
+        images = ','.join(result1)
+        image = result1[0]
+        category_id = 0  # v2
+        freight_id = 1
+        shop_id = 1
+        brand_id = 1
+        grounding = 1
+        specs = 'single'
+        distribution = 'false'
+        activity = 'false'
+        views = 0
+        description = ''
+        stock = 9999
+        sn = 11
+        market_price = price
+        item = "color1"
+        difference = "color1"
+        spuname = "color"
+        original_html = str(original_html)
+        title = str(title)
+        xsprice = xsprice.replace("$", "")
+        xsprice = xsprice.replace("GBP ", "")
+        xsprice = xsprice.replace("GBP", "")
+        xsprice = float(xsprice)
+        sql = 'Insert  Into `fa_wanlshop_wholesale1` (`title`,`image`,`images`,`price`,`wholesale_price`,`category_id`,`shop_id`,`brand_id`,`freight_id`,`grounding`,`specs`,`distribution`,`activity`,`views`,`content`,`proid`) Values (%s,%s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s)'
+        val = (
+            title, image, images, xsprice, xsprice, category_id, -1, brand_id, freight_id, grounding, specs,
+            distribution,
+            activity, views, original_html, url)
+        print(title)
         mycursor.execute(sql, val)
-    except MySQLdb.Error as e:
-        print(e)
-    goodsid = mycursor.lastrowid
-    # price = re.findall('', req.text, re.S)
-    # price=price.strip()
-    # price = "{"+price+"}"
-    # price=price.rstrip()
-    # # json_encode = json.dumps(price)
-    # price = price.replace('"', '@@')
-    # price = price.replace("'", '"')
-    # price = price.replace("$", 'ttt')
-    # price = price.replace("@@", "'")
-    # b = eval(price)
-    #
-    # json_decode = json.loads(price)
-    # //,strict=False
+        goodsid = mycursor.lastrowid
 
-    # type_text = html.xpath('/html/body//a/span[@class="a-size-base-plus a-color-base a-text-normal"]')  # 排除上级
+        # sql = "INSERT INTO fa_wanlshop_wholesale_spu1 (name, item,goods_id) VALUES (%s, %s, %s)"
+        # val = (spuname, item, goodsid)
+        # mycursor.execute(sql, val)
+        # spuid = mycursor.lastrowid
+        #
+        # sql = "INSERT INTO fa_wanlshop_wholesale_sku1 (difference, price,market_price,wholesale_price,stock,goods_id,weigh,sn) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
+        # val = (difference, xsprice, xsprice, xsprice, stock, goodsid, 1, sn)
+        # mycursor.execute(sql, val)
+        # skuid = mycursor.lastrowid
+        mydb.commit()
+        # sql = 'Insert  Into `fa_wanlshop_wholesale` (`title`,`image`,`images`,`price`,`category_id`,`shop_id`,`brand_id`,`freight_id`,`grounding`,`specs`,`distribution`,`activity`,`views`,`content`,`proid`) Values (`%s`, `%s`, `%s`, %s, %s, %s,%s, %s, %s, `%s`, %s, %s, %s, `%s`, `%s`)' % (
+        #     title, image, images, price, category_id, shop_id, brand_id, freight_id, grounding, specs,
+        #     distribution,
+        #     activity, views, description, proid)
+        try:
+            mycursor.execute(sql, val)
+        except MySQLdb.Error as e:
+            print(e)
+        goodsid = mycursor.lastrowid
+        # price = re.findall('', req.text, re.S)
+        # price=price.strip()
+        # price = "{"+price+"}"
+        # price=price.rstrip()
+        # # json_encode = json.dumps(price)
+        # price = price.replace('"', '@@')
+        # price = price.replace("'", '"')
+        # price = price.replace("$", 'ttt')
+        # price = price.replace("@@", "'")
+        # b = eval(price)
+        #
+        # json_decode = json.loads(price)
+        # //,strict=False
 
-    url = "https://www.amazon.com/"+url
+        # type_text = html.xpath('/html/body//a/span[@class="a-size-base-plus a-color-base a-text-normal"]')  # 排除上级
+
+        url = "https://www.amazon.com/" + url
+
+
+
+
 
 
